@@ -1,0 +1,32 @@
+{
+  "name": "starterpack-isabellahoch",
+  "version": "1.0.0",
+  "description": "CS52 SA2 frontend starterpack",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dartmouth-cs52-22S/starterpack-isabellahoch.git"
+  },
+  "keywords": [
+    "CS52",
+    "SA2",
+    "frontend",
+    "starterpack",
+    "starterpack"
+  ],
+  "author": "Isabella Hochschild",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dartmouth-cs52-22S/starterpack-isabellahoch/issues"
+  },
+  "homepage": "https://github.com/dartmouth-cs52-22S/starterpack-isabellahoch#readme",
+  "devDependencies": {
+    "webpack": "^5.72.0",
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.8.1"
+  }
+}
