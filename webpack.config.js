@@ -16,6 +16,13 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.(jpe?g|png|gif|svg)$/,
+        type: 'asset/resource',
+        generator: {
+          filename: 'assets/[name].[hash][ext][query]',
+        },
+      },
+      {
         test: /\.js$/,
         exclude: /node_modules/,
         use: [
@@ -49,18 +56,6 @@ module.exports = {
             loader: 'sass-loader',
             options: {
               sourceMap: true,
-            },
-          },
-        ],
-      },
-      {
-        test: /\.(jpe?g|png|gif|svg)$/,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              useRelativePath: true,
-              name: '[name].[ext]',
             },
           },
         ],
