@@ -13,3 +13,4 @@ I played around a little with styling and created a custom logo and favicon for 
 
 ## Screenshots
 ![screenshot](https://drive.google.com/uc?export=download&id=1t9fMCwJZ6TbZnDCGZbMQ_mHHmYHi9QHp)
+see [/src/img/screenshot.png](https://github.com/dartmouth-cs52-22S/starterpack-isabellahoch/blob/main/src/img/screenshot.png)
