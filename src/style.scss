@@ -1,8 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Rubik+Moonrocks&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&family=Patua+One&family=Roboto+Mono:wght@300&display=swap');
 
+:root {
+    --main-color: brown;
+  }
+
+* {
+    font-family: 'Montserrat', sans-serif;
+}
 body, html {
-    font-family: 'Rubik Moonrocks', cursive;
-    background: linear-gradient(to bottom, #87fda1 0%,#5aa86b 40%,#396d45 100%);
+    box-sizing: border-box;
     height: 100%;
     color: #000;
     display: flex;
@@ -11,10 +17,11 @@ body, html {
     flex-direction: column;
 }
 
-.logo {
-    background-image: url('./img/logo.png');
-    width: 100px;
-    height: 100px;
-    background-repeat: no-repeat;
-    background-size: contain;
-}  
+a {
+    color: var(--main-color);
+}
+
+.active {
+    color: pink;
+}
+  
