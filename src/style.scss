@@ -1,7 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&family=Patua+One&family=Roboto+Mono:wght@300&display=swap');
 
 :root {
-    --main-color: brown;
+    --background-color: #A0CA92;
+    --green-2: #C6DA9A;
+    --darker-green: #75B09C;
+    --pink: #FD88C1;
+    --yellow: #ECD98D;
   }
 
 * {
@@ -15,6 +19,15 @@ body, html {
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    background-color: var(background-color);
+}
+
+div {
+    background-color: var(background-color);
+}
+
+.container {
+
 }
 
 a {
