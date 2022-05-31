@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable react/jsx-props-no-spreading */
 import * as React from 'react';
 import { useRef } from 'react';
@@ -16,9 +17,14 @@ import {
 } from '@chakra-ui/react';
 import { NavLink } from 'react-router-dom';
 import ResizeTextarea from 'react-textarea-autosize';
+import { useNavigate } from 'react-router';
+import { useDispatch } from 'react-redux';
 import colors from '../styles';
+import { createRoom } from '../actions';
 
 export default function CreateGame() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const ref = useRef();
 
   const {
@@ -30,9 +36,13 @@ export default function CreateGame() {
   function onSubmit(values) {
     return new Promise((resolve) => {
       setTimeout(() => {
-        console.log(JSON.stringify(values, null, 2));
+        dispatch(createRoom(values));
         resolve();
-      }, 3000);
+      }, 1000);
+    }).then((res) => {
+      console.log(res);
+      navigate('/');
+      // navigate(`/rooms/${res.id}`);
     });
   }
 
@@ -47,20 +57,23 @@ export default function CreateGame() {
   }
 
   return (
-    <Box bg={colors.accent3}><Heading>Create a New Room!</Heading>
+    <Box bg={colors.accent3} w="70vw">
+      <Center>
+        <Heading>Create a New Room!</Heading>
+      </Center>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <FormControl isInvalid={errors.name}>
-          <FormLabel htmlFor="name">First name</FormLabel>
+        <FormControl isInvalid={errors.creator}>
+          <FormLabel htmlFor="creator">First name</FormLabel>
           <Input
-            id="name"
+            id="creator"
             placeholder="name"
-            {...register('name', {
+            {...register('creator', {
               required: 'This is required',
               minLength: { value: 4, message: 'Minimum length should be 4' },
             })}
           />
           <FormErrorMessage>
-            {errors.name && errors.name.message}
+            {errors.creator && errors.creator.message}
           </FormErrorMessage>
         </FormControl>
         <FormControl isInvalid={errors.email}>
@@ -69,11 +82,24 @@ export default function CreateGame() {
           <FormErrorMessage>
             {errors.email && errors.email.message}
           </FormErrorMessage>
-          <FormLabel htmlFor="questions">Questions &amp; Responses</FormLabel>
+        </FormControl>
+        <FormControl isInvalid={errors.roomKey}>
+          <FormLabel htmlFor="roomKey">Room Key</FormLabel>
+          <Input id="roomKey"
+            placeholder="room key"
+            {...register('roomKey', {
+              required: 'This is required',
+              minLength: { value: 4, message: 'Minimum length should be 4' },
+            })}
+          />
+          <FormErrorMessage>
+            {errors.roomKey && errors.roomKey.message}
+          </FormErrorMessage>
         </FormControl>
         <FormControl isInvalid={errors.questions}>
+          <FormLabel htmlFor="questions">Questions &amp; Responses</FormLabel>
           <Textarea
-            minH="unset"
+            minH="100px"
             overflow="hidden"
             w="100%"
             resize="none"
@@ -97,7 +123,9 @@ export default function CreateGame() {
           </Button>
         </Center>
       </form>
-      <Text>Game already created? <NavLink to="/join">Join an existing game here.</NavLink></Text>
+      <Center>
+        <Text>Game already created? <NavLink to="/join" style={{ textDecoration: 'underline' }}>Join an existing game here.</NavLink></Text>
+      </Center>
     </Box>
   );
 }

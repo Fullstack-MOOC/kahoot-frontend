@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {
-  BrowserRouter, Routes, Route, NavLink, useParams,
+  BrowserRouter, Routes, Route,
 } from 'react-router-dom';
 import {
   extendTheme, ChakraProvider, CSSReset, Box,
@@ -9,6 +9,7 @@ import Home from './home';
 import CreateGame from './create_game';
 import JoinGame from './join_game';
 import colors from '../styles';
+import Question from './question';
 
 const styles = {
   brand: {
@@ -30,8 +31,10 @@ const styles = {
     // styles for the `a`
     a: {
       color: colors.accent3,
+      textDecoration: 'underline',
       _hover: {
         textDecoration: 'underline',
+        color: colors.accent4,
       },
     },
     form: {
@@ -58,23 +61,10 @@ const styles = {
 
 const theme = extendTheme({ styles });
 
-function Nav(props) {
-  return (
-    <nav>
-      <ul>
-        <li><NavLink to="/" exact>Home</NavLink></li>
-        <li><NavLink to="/create">New Game</NavLink></li>
-        <li><NavLink to="/join">Join Game</NavLink></li>
-        <li><NavLink to="/test/id2">test id2</NavLink></li>
-      </ul>
-    </nav>
-  );
-}
-
-function Test(props) {
-  const { id } = useParams();
-  return <div> ID: {id} </div>;
-}
+// function Test(props) {
+//   const { id } = useParams();
+//   return <div> ID: {id} </div>;
+// }
 
 function FallBack(props) {
   return <div>404: URL Not Found</div>;
@@ -85,16 +75,14 @@ function App() {
     <ChakraProvider theme={theme}>
       <CSSReset />
       <BrowserRouter>
-        <div>
-          <Nav />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/create" element={<Box p={4}><CreateGame /></Box>} />
-            <Route path="/join" element={<Box p={4}><JoinGame /></Box>} />
-            <Route path="/test/:id" element={<Test />} />
-            <Route path="*" element={<FallBack />} />
-          </Routes>
-        </div>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/create" element={<Box p={4}><CreateGame /></Box>} />
+          <Route path="/join" element={<Box p={4}><JoinGame /></Box>} />
+          {/* <Route path="/rooms/:id" element={<Test />} /> */}
+          <Route path="/rooms/:roomID/questions/:questionNumber" element={<Question />} />
+          <Route path="*" element={<FallBack />} />
+        </Routes>
       </BrowserRouter>
     </ChakraProvider>
   );

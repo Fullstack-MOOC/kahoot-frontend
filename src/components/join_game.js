@@ -13,9 +13,16 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { NavLink } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router';
+import axios from 'axios';
 import colors from '../styles';
+import { joinRoom } from '../actions';
+import API_CLIENT from '../creds';
 
 export default function JoinGame() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const {
     handleSubmit,
     register,
@@ -23,19 +30,19 @@ export default function JoinGame() {
   } = useForm();
 
   function onSubmit(values) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        console.log(JSON.stringify(values, null, 2));
-        resolve();
-      }, 3000);
-    });
+    dispatch(joinRoom(values));
+    navigate(`/rooms/${values.code}/questions/0`);
   }
 
-  function isValidCode(str) {
+  function isValidCode(code) {
     let error;
     try {
-      // get room
-      console.log('hey');
+      axios.get(`${API_CLIENT}/rooms/${code}`)
+        .then((res) => {
+          const response = res.data;
+          console.log('the code is valid!');
+          console.log(response);
+        });
     } catch (e) {
       return 'Invalid game code. Check again.';
     }
@@ -43,7 +50,10 @@ export default function JoinGame() {
   }
 
   return (
-    <Box bg={colors.accent3}><Heading>Join an Existing Game!</Heading>
+    <Box bg={colors.accent3} w="70vw">
+      <Center>
+        <Heading>Join an Existing Game!</Heading>
+      </Center>
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormControl isInvalid={errors.code}>
           <FormLabel htmlFor="code">Game Code</FormLabel>
@@ -63,9 +73,12 @@ export default function JoinGame() {
         </FormControl>
         <FormControl isInvalid={errors.name}>
           <FormLabel htmlFor="name">name</FormLabel>
-          <Input id="name" placeholder="be respectful, please." />
+          <Input id="name"
+            placeholder="be respectful, please."
+            {...register('name', { required: 'This is required' })}
+          />
           <FormErrorMessage>
-            {errors.name && errors.naem.message}
+            {errors.name && errors.name.message}
           </FormErrorMessage>
         </FormControl>
         <Center>
@@ -73,9 +86,13 @@ export default function JoinGame() {
             Join
           </Button>
         </Center>
-
+        <Center>
+          <Button mt={4} colorScheme="teal"><NavLink to="/rooms/629580c3074e542edb5d5946/questions/0">test question</NavLink></Button>
+        </Center>
       </form>
-      <Text>No game to join? <NavLink to="/create">Create a new game here.</NavLink></Text>
+      <Center>
+        <Text>No game to join? <NavLink to="/create" style={{ textDecoration: 'underline' }}>Create a new game here.</NavLink></Text>
+      </Center>
     </Box>
   );
 }
