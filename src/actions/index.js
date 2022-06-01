@@ -59,10 +59,11 @@ export const getQuestion = (roomID, questionNumber) => (dispatch) => {
   }
 };
 
-export const createRoom = (params) => (dispatch) => {
+export const createRoom = (params, navigate) => (dispatch) => {
   try {
-    const { roomKey } = params;
-    axios.post(`${API_CLIENT}/rooms`, params)
+    const { creator, roomKey, questions } = params;
+
+    axios.post(`${API_CLIENT}/rooms`, { creator, roomKey, questions: JSON.parse(questions) })
       .then((res) => {
         const response = res.data;
         dispatch({
@@ -70,6 +71,35 @@ export const createRoom = (params) => (dispatch) => {
           payload: response,
           roomKey,
         });
+        console.log(response);
+        navigate(`/rooms/${response.id}`);
+        // axios.get(`${API_CLIENT}/rooms`)
+        //   .then((res) => {
+        //     const response = res.data;
+        //     dispatch({
+        //       type: ActionTypes.GET_POSTS,
+        //       payload: response,
+        //     });
+        //   });
+      });
+  } catch (error) {
+    dispatch(error(`Create Room Failed: ${error.response.data}`));
+  }
+};
+
+export const openRoom = (roomID, params) => (dispatch) => {
+  try {
+    const { roomKey } = params;
+
+    axios.patch(`${API_CLIENT}/rooms/${roomID}`, params)
+      .then((res) => {
+        const response = res.data;
+        dispatch({
+          type: ActionTypes.GET_ROOM,
+          payload: response,
+          roomKey,
+        });
+        console.log(response);
         // axios.get(`${API_CLIENT}/rooms`)
         //   .then((res) => {
         //     const response = res.data;

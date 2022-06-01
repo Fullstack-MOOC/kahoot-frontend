@@ -12,7 +12,7 @@ import {
   Heading,
   Text,
 } from '@chakra-ui/react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 import axios from 'axios';
@@ -29,7 +29,16 @@ export default function JoinGame() {
     formState: { errors, isSubmitting },
   } = useForm();
 
+  const [searchParams] = useSearchParams();
+
+  const roomID = searchParams.get('room');
+
   function onSubmit(values) {
+    console.log(values);
+    if (roomID) {
+      // eslint-disable-next-line no-param-reassign
+      values.code = roomID;
+    }
     dispatch(joinRoom(values));
     navigate(`/rooms/${values.code}/questions/0`);
   }
@@ -49,6 +58,32 @@ export default function JoinGame() {
     return error;
   }
 
+  const renderDependingOnParam = () => {
+    if (roomID) {
+      return (
+        <Input
+          id="code"
+          placeholder="game code"
+          isDisabled
+          value={roomID}
+          // eslint-disable-next-line react/jsx-no-bind
+        />
+      );
+    }
+    return (
+      <Input
+        id="code"
+        placeholder="game code"
+          // eslint-disable-next-line react/jsx-no-bind
+        validate={isValidCode}
+        {...register('code', {
+          required: 'This is required',
+          minLength: { value: 6, message: 'Minimum length should be 6' },
+        })}
+      />
+    );
+  };
+
   return (
     <Box bg={colors.accent3} w="70vw">
       <Center>
@@ -57,16 +92,7 @@ export default function JoinGame() {
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormControl isInvalid={errors.code}>
           <FormLabel htmlFor="code">Game Code</FormLabel>
-          <Input
-            id="code"
-            placeholder="game code"
-          // eslint-disable-next-line react/jsx-no-bind
-            validate={isValidCode}
-            {...register('code', {
-              required: 'This is required',
-              minLength: { value: 6, message: 'Minimum length should be 6' },
-            })}
-          />
+          {renderDependingOnParam()}
           <FormErrorMessage>
             {errors.code && errors.code.message}
           </FormErrorMessage>

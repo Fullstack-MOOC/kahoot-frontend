@@ -34,16 +34,7 @@ export default function CreateGame() {
   } = useForm();
 
   function onSubmit(values) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        dispatch(createRoom(values));
-        resolve();
-      }, 1000);
-    }).then((res) => {
-      console.log(res);
-      navigate('/');
-      // navigate(`/rooms/${res.id}`);
-    });
+    dispatch(createRoom(values, navigate));
   }
 
   function isJsonString(str) {
@@ -74,13 +65,6 @@ export default function CreateGame() {
           />
           <FormErrorMessage>
             {errors.creator && errors.creator.message}
-          </FormErrorMessage>
-        </FormControl>
-        <FormControl isInvalid={errors.email}>
-          <FormLabel htmlFor="email">Email address</FormLabel>
-          <Input id="email" type="email" />
-          <FormErrorMessage>
-            {errors.email && errors.email.message}
           </FormErrorMessage>
         </FormControl>
         <FormControl isInvalid={errors.roomKey}>

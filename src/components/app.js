@@ -10,6 +10,7 @@ import CreateGame from './create_game';
 import JoinGame from './join_game';
 import colors from '../styles';
 import Question from './question';
+import Room from './room';
 
 const styles = {
   brand: {
@@ -81,6 +82,7 @@ function App() {
           <Route path="/join" element={<Box p={4}><JoinGame /></Box>} />
           {/* <Route path="/rooms/:id" element={<Test />} /> */}
           <Route path="/rooms/:roomID/questions/:questionNumber" element={<Question />} />
+          <Route path="/rooms/:roomID" element={<Room />} />
           <Route path="*" element={<FallBack />} />
         </Routes>
       </BrowserRouter>
