@@ -1,3 +1,6 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
+import { createAsyncThunk, isRejectedWithValue } from '@reduxjs/toolkit';
 import axios from 'axios';
 import API_CLIENT from '../creds';
 
@@ -13,146 +16,119 @@ export const ActionTypes = {
   GET_SCOREBOARD: 'sb',
 };
 
-export const getRooms = () => (dispatch) => {
+const roomStatus = {
+  IN_PROGRESS: 'IN_PROGRESS',
+  CLOSED: 'CLOSED',
+  OPEN: 'OPEN',
+  GAME_OVER: 'GAME_OVER',
+
+};
+
+/**
+ * Fetch all information about a specific room
+ *
+ * @param {*} roomID - ID of the room that you want to fetch
+ * @returns the specified room object as defined in the database schema
+ */
+export const getRoom = async (roomID) => {
   try {
-    axios.get(`${API_CLIENT}/rooms`)
-      .then((res) => {
-        const response = res.data;
-        dispatch({
-          type: ActionTypes.GET_ROOMS,
-          payload: response,
-        });
-      });
+    const res = await axios.get(`${API_CLIENT}/rooms/${roomID}`);
+    const room = res.data;
+    console.log(room);
+    return room;
   } catch (error) {
-    dispatch(error(`Request Failed: ${error.response.data}`));
+    throw new Error('Could not get Status');
   }
 };
 
-export const getRoom = (roomID) => (dispatch) => {
+export const forceAnswer = async (roomID, roomKey) => {
+  const res = await axios.post(`${API_CLIENT}/rooms/${roomID}/submissions`, { roomKey, force: true });
+  return res.data;
+};
+
+export const getQuestion = createAsyncThunk(
+  'kahoot/getQuestion',
+  async (roomID) => {
+    try {
+      const response = await axios.get(`${API_CLIENT}/rooms/${roomID}`);
+      const roomState = response.data;
+      if (roomState.status === roomStatus.GAME_OVER) {
+        throw new Error('Game is over!');
+      }
+      if (roomState.status !== roomStatus.IN_PROGRESS) {
+        throw new Error('Game is not in progress');
+      }
+      return roomState.currentQuestion;
+    } catch (error) {
+      return error(`Request Failed: ${error.response.data}`);
+    }
+  },
+);
+
+export const createRoom = createAsyncThunk(
+  'kahoot/createRoom',
+  (roomInfo, { rejectWithValue }) => {
+    try {
+      console.log(roomInfo);
+      return axios.post(`${API_CLIENT}/rooms`, { name: roomInfo.creator, roomKey: roomInfo.roomKey, questions: roomInfo.questions })
+        .then((res) => {
+          const response = res.data;
+          console.log(response);
+          return response;
+        }).catch((error) => { console.log(error.response.data); });
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  },
+);
+
+export const startGame = (roomId, params) => (dispatch) => {
   try {
-    axios.get(`${API_CLIENT}/rooms/${roomID}`)
-      .then((res) => {
-        const response = res.data;
-        dispatch({
-          type: ActionTypes.GET_ROOM,
-          payload: response,
-        });
-      });
+    console.log(params);
+    axios.patch(`${API_CLIENT}/rooms/${roomId}`, { roomKey: params.roomkey, status: params.status })
+      .catch((error) => console.log(error.response.data));
   } catch (error) {
-    dispatch(error(`Request Failed: ${error.response.data}`));
+    dispatch((error(`Could not start game: ${error.response.data}`)));
   }
 };
 
-export const getQuestion = (roomID, questionNumber) => (dispatch) => {
-  try {
-    axios.get(`${API_CLIENT}/rooms/${roomID}`)
-      .then((res) => {
-        const response = res.data;
-        const question = response.questions[parseInt(questionNumber, 10)];
-        dispatch({
-          type: ActionTypes.GET_QUESTION,
-          payload: question,
-        });
-      });
-  } catch (error) {
-    dispatch(error(`Request Failed: ${error.response.data}`));
-  }
-};
+export const openRoom = createAsyncThunk(
+  'kahoot/openRoom',
+  async (roomInfo, { rejectWithValue }) => {
+    const { roomID, roomKey } = roomInfo;
+    try {
+      const res = await axios.patch(`${API_CLIENT}/rooms/${roomID}`, { roomKey, status: 'OPEN' });
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  },
+);
 
-export const createRoom = (params, navigate) => (dispatch) => {
-  try {
-    const { creator, roomKey, questions } = params;
-
-    axios.post(`${API_CLIENT}/rooms`, { creator, roomKey, questions: JSON.parse(questions) })
-      .then((res) => {
-        const response = res.data;
-        dispatch({
-          type: ActionTypes.MAKE_ROOM,
-          payload: response,
-          roomKey,
-        });
-        console.log(response);
-        navigate(`/rooms/${response.id}`);
-        // axios.get(`${API_CLIENT}/rooms`)
-        //   .then((res) => {
-        //     const response = res.data;
-        //     dispatch({
-        //       type: ActionTypes.GET_POSTS,
-        //       payload: response,
-        //     });
-        //   });
-      });
-  } catch (error) {
-    dispatch(error(`Create Room Failed: ${error.response.data}`));
-  }
-};
-
-export const openRoom = (roomID, params) => (dispatch) => {
-  try {
-    const { roomKey } = params;
-
-    axios.patch(`${API_CLIENT}/rooms/${roomID}`, params)
-      .then((res) => {
-        const response = res.data;
-        dispatch({
-          type: ActionTypes.GET_ROOM,
-          payload: response,
-          roomKey,
-        });
-        console.log(response);
-        // axios.get(`${API_CLIENT}/rooms`)
-        //   .then((res) => {
-        //     const response = res.data;
-        //     dispatch({
-        //       type: ActionTypes.GET_POSTS,
-        //       payload: response,
-        //     });
-        //   });
-      });
-  } catch (error) {
-    dispatch(error(`Create Room Failed: ${error.response.data}`));
-  }
-};
-
-export const joinRoom = (params) => (dispatch) => {
-  try {
+export const joinRoom = createAsyncThunk(
+  'kahoot/joinRoom',
+  async (params) => {
     const { code, name } = params;
-    axios.post(`${API_CLIENT}/rooms/${code}`, { name })
-      .then((res) => {
-        const response = res.data;
-        console.log(response);
-        dispatch({
-          type: ActionTypes.JOIN_ROOM,
-          payload: response,
-        });
-      });
-  } catch (error) {
-    dispatch(error(`Join Room Failed: ${error.response.data}`));
-  }
-};
+    const res = await axios.post(`${API_CLIENT}/rooms/${code}`, { name });
+    const response = res.data;
+    console.log(response);
+    return response;
+  },
+);
 
-export const submitAnswer = (roomID, params) => (dispatch) => {
-  try {
-    axios.post(`${API_CLIENT}/rooms/${roomID}/submissions`, params)
-      .then((res) => {
-        const response = res.data;
-        dispatch({
-          type: ActionTypes.SUBMIT_ANSWER,
-          payload: response,
-        });
-        // axios.get(`${API_CLIENT}/rooms`)
-        //   .then((res) => {
-        //     const response = res.data;
-        //     dispatch({
-        //       type: ActionTypes.GET_POSTS,
-        //       payload: response,
-        //     });
-        //   });
-      });
-  } catch (error) {
-    dispatch(error(`Create Room Failed: ${error.response.data}`));
-  }
-};
+export const submitAnswer = createAsyncThunk(
+  'kahoot/submitAnswer',
+  async (submitParams, { rejectWithValue }) => {
+    try {
+      const { roomID, player, response } = submitParams;
+      const res = await axios.post(`${API_CLIENT}/rooms/${roomID}/submissions`, { player, response });
+      return res.data;
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue(error.response.data);
+    }
+  },
+);
 
 export const getScoreboard = (roomID) => (dispatch) => {
   try {

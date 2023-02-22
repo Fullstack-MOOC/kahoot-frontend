@@ -59,6 +59,7 @@
     "@chakra-ui/react": "^2.1.2",
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
+    "@reduxjs/toolkit": "^1.8.6",
     "axios": "^0.26.1",
     "framer-motion": "^6.3.4",
     "jquery": "^3.6.0",

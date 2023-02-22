@@ -80,7 +80,6 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/create" element={<Box p={4}><CreateGame /></Box>} />
           <Route path="/join" element={<Box p={4}><JoinGame /></Box>} />
-          {/* <Route path="/rooms/:id" element={<Test />} /> */}
           <Route path="/rooms/:roomID/questions/:questionNumber" element={<Question />} />
           <Route path="/rooms/:roomID" element={<Room />} />
           <Route path="*" element={<FallBack />} />
