@@ -34,7 +34,12 @@ export default function CreateGame() {
   } = useForm();
 
   function onSubmit(values) {
-    dispatch(createRoom(values, navigate));
+    console.log('Called submit');
+    // eslint-disable-next-line no-param-reassign
+    values.questions = values.questions.replace(/\n|\r/g, '');
+    // eslint-disable-next-line no-param-reassign
+    values.questions = JSON.parse(values.questions);
+    dispatch(createRoom(values, navigate)).then((vals) => { console.log(vals.payload); navigate(`/rooms/${vals.payload.id}`); });
   }
 
   function isJsonString(str) {
@@ -91,7 +96,7 @@ export default function CreateGame() {
             minRows={1}
             as={ResizeTextarea}
             placeholder="Please enter your questions &amp; responses in JSON format"
-          // eslint-disable-next-line react/jsx-no-bind
+            // eslint-disable-next-line react/jsx-no-bind
             validate={isJsonString}
             {...register('questions', {
               required: 'Questions are required',

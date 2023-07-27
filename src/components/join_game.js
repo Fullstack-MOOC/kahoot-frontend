@@ -39,8 +39,9 @@ export default function JoinGame() {
       // eslint-disable-next-line no-param-reassign
       values.code = roomID;
     }
-    dispatch(joinRoom(values));
-    navigate(`/rooms/${values.code}/questions/0`);
+    dispatch(joinRoom(values)).unwrap()
+      .then(() => navigate(`/rooms/${values.code}/questions/0`))
+      .catch((error) => console.log(error.message));
   }
 
   function isValidCode(code) {
@@ -66,7 +67,6 @@ export default function JoinGame() {
           placeholder="game code"
           isDisabled
           value={roomID}
-          // eslint-disable-next-line react/jsx-no-bind
         />
       );
     }
@@ -74,7 +74,7 @@ export default function JoinGame() {
       <Input
         id="code"
         placeholder="game code"
-          // eslint-disable-next-line react/jsx-no-bind
+        // eslint-disable-next-line react/jsx-no-bind
         validate={isValidCode}
         {...register('code', {
           required: 'This is required',
