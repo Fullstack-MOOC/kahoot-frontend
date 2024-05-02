@@ -4,10 +4,10 @@
   "description": "CS52 SA2 frontend starterpack",
   "main": "src/index.js",
   "scripts": {
-    "start": "NODE_ENV=development webpack serve",
+    "dev": "vite",
+    "serve": "NODE_ENV=development vite preview",
     "test": "eslint src",
-    "build": "npm run clean; NODE_ENV=production webpack --color",
-    "winbuild": "npm run clean & SET NODE_ENV=production& webpack --color",
+    "build": "npm run clean; NODE_ENV=production vite build",
     "clean": "rimraf dist"
   },
   "repository": {
@@ -60,6 +60,7 @@
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
     "@reduxjs/toolkit": "^1.8.6",
+    "@vitejs/plugin-react": "^4.2.1",
     "axios": "^0.26.1",
     "framer-motion": "^6.3.4",
     "jquery": "^3.6.0",
@@ -72,6 +73,7 @@
     "react-router-dom": "^6.3.0",
     "react-textarea-autosize": "^8.3.4",
     "redux": "^4.2.0",
-    "redux-thunk": "^2.4.1"
+    "redux-thunk": "^2.4.1",
+    "vite": "^5.2.11"
   }
 }

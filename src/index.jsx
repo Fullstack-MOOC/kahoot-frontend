@@ -11,5 +11,4 @@ root.render(
   <Provider store={kahootStore}>
     <App />
   </Provider>,
-  document.getElementById('main'),
 );
