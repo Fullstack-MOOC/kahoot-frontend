@@ -62,11 +62,6 @@ const styles = {
 
 const theme = extendTheme({ styles });
 
-// function Test(props) {
-//   const { id } = useParams();
-//   return <div> ID: {id} </div>;
-// }
-
 function FallBack(props) {
   return <div>404: URL Not Found</div>;
 }
@@ -80,8 +75,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/create" element={<Box p={4}><CreateGame /></Box>} />
           <Route path="/join" element={<Box p={4}><JoinGame /></Box>} />
-          <Route path="/rooms/:roomID/questions/:questionNumber" element={<Question />} />
-          <Route path="/rooms/:roomID" element={<Room />} />
+          <Route path="/rooms/:roomId/questions/:questionNumber" element={<Question />} />
+          <Route path="/rooms/:roomId" element={<Room />} />
           <Route path="*" element={<FallBack />} />
         </Routes>
       </BrowserRouter>

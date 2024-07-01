@@ -13,16 +13,14 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { NavLink, useSearchParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router';
 import axios from 'axios';
 import colors from '../styles';
-import { joinRoom } from '../actions';
-import API_CLIENT from '../creds';
+import { API_CLIENT } from '../utils/constants';
+import { joinRoom } from '../api/actions';
 
 export default function JoinGame() {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const { mutate: mutateJoinRoom } = joinRoom();
+
   const {
     handleSubmit,
     register,
@@ -31,17 +29,16 @@ export default function JoinGame() {
 
   const [searchParams] = useSearchParams();
 
-  const roomID = searchParams.get('room');
+  const roomId = searchParams.get('room');
 
   function onSubmit(values) {
     console.log(values);
-    if (roomID) {
+    if (roomId) {
       // eslint-disable-next-line no-param-reassign
-      values.code = roomID;
+      values.code = roomId;
     }
-    dispatch(joinRoom(values)).unwrap()
-      .then(() => navigate(`/rooms/${values.code}/questions/0`))
-      .catch((error) => console.log(error.message));
+
+    mutateJoinRoom(values);
   }
 
   function isValidCode(code) {
@@ -60,13 +57,13 @@ export default function JoinGame() {
   }
 
   const renderDependingOnParam = () => {
-    if (roomID) {
+    if (roomId) {
       return (
         <Input
           id="code"
           placeholder="game code"
           isDisabled
-          value={roomID}
+          value={roomId}
         />
       );
     }

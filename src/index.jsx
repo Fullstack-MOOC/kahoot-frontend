@@ -1,14 +1,17 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import './style.scss';
-import { Provider } from 'react-redux';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import App from './components/app';
-import { kahootStore } from './stores/kahootStore';
+
+const queryClient = new QueryClient();
 
 const root = createRoot(document.getElementById('main'));
 
 root.render(
-  <Provider store={kahootStore}>
-    <App />
-  </Provider>,
+  <React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <App />
+    </QueryClientProvider>
+  </React.StrictMode>,
 );

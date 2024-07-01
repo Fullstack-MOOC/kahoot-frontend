@@ -12,17 +12,16 @@ import {
   Heading,
   Text,
 } from '@chakra-ui/react';
-import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
 import { useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import colors from '../styles';
-import { getQuestion, submitAnswer } from '../actions';
+import { getRoom, submitAnswer } from '../api/actions';
+import useBoundStore from '../store';
 
 export default function Question() {
   const location = useLocation();
-  const { roomID, questionNumber } = useParams();
-  const dispatch = useDispatch();
+  const { roomId, questionNumber } = useParams();
   const navigate = useNavigate();
 
   const {
@@ -31,29 +30,17 @@ export default function Question() {
     formState: { errors, isSubmitting },
   } = useForm();
 
-  useEffect(() => {
-    if (roomID) {
-      console.log('getting room', roomID);
-      dispatch(getQuestion(roomID, questionNumber));
-    }
-  }, []);
+  const { data: room, isLoading: isRoomLoading } = getRoom(roomId);
+  const { mutate: mutateSubmitAnswer } = submitAnswer();
 
-  const question = useSelector((reduxState) => reduxState.reducer.question);
-  const player = useSelector((reduxState) => reduxState.reducer.player);
+  const name = useBoundStore((state) => state.name);
 
   function onSubmit(values) {
-    console.log(values);
-    console.log(values.answer);
-    dispatch(submitAnswer({ roomID, player, response: values.answer })).unwrap().then(() => {
-      console.log(location.pathname);
-      const urlSplit = location.pathname.split('/questions/');
-      console.log(urlSplit);
-      navigate(`${urlSplit[0]}/questions/${parseInt(urlSplit[1], 10) + 1}`);
-    }).catch((error) => console.log(error));
+    mutateSubmitAnswer({ roomId, name, response: values.answer });
   }
-  if (question != null) {
+  if (!isRoomLoading && !room.currentQuestion) {
     return (
-      <Box bg={colors.accent3}><Heading>Question #{parseInt(questionNumber, 10) + 1}: {question}</Heading>
+      <Box bg={colors.accent3}><Heading>Question #{parseInt(questionNumber, 10) + 1}: {room.currentQuestion}</Heading>
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormControl isInvalid={errors.answer}>
             <FormLabel htmlFor="code">Answer</FormLabel>
@@ -72,12 +59,6 @@ export default function Question() {
             <Button mt={4} colorScheme="teal" isLoading={isSubmitting} type="submit">
               Answer
             </Button>
-            <Button bgColor="orange"
-              onClick={() => {
-                dispatch(getQuestion());
-              }}
-            >Refresh
-            </Button>
           </Center>
         </form>
       </Box>
@@ -86,12 +67,6 @@ export default function Question() {
     return (
       <Box>
         <Text>Loading question....</Text>
-        <Button bgColor="orange"
-          onClick={() => {
-            dispatch(getQuestion());
-          }}
-        >Refresh
-        </Button>
       </Box>
     );
   }
