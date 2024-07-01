@@ -14,7 +14,6 @@ import {
 } from '@chakra-ui/react';
 import { useNavigate, useParams } from 'react-router';
 import { useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
 import colors from '../styles';
 import { getRoom, submitAnswer } from '../api/actions';
 import useBoundStore from '../store';

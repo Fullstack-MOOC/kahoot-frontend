@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router';
 import {
   Flex,
@@ -13,18 +13,23 @@ import {
   List,
 } from '@chakra-ui/react';
 import { getRoom, changeRoomStatus, submitAnswer } from '../api/actions';
+import useBoundStore from '../store';
 
 export default function Room() {
   const { roomId } = useParams();
-  const [roomKey, setroomKey] = useState('');
+  const [roomKey, setRoomKey] = useState('');
 
   const { data: room, isLoading: isRoomLoading } = getRoom(roomId);
-  const { players, currentQuestionNumber: currQuestionNum, status } = room;
+  const players = room?.players;
+  const currQuestionNum = room?.currentQuestionNumber;
+  const status = room?.status;
 
   const { mutate: mutateChangeRoomStatus } = changeRoomStatus();
   const { mutate: mutateSubmitAnswer } = submitAnswer();
 
   const name = useBoundStore((state) => state.name);
+
+  // TODO: Add Toast banners
 
   return (
     <Flex direction="column" align="center" height="100vh" w="100vw">
@@ -33,8 +38,7 @@ export default function Room() {
         <Text>You&apos;ve successfully created a room with ID <strong>{roomId}</strong>.</Text>
         <Text>Share it with your friends! <a href={`/join?room=${roomId}`}>/join?room={roomId}</a></Text>
       </Box>
-      <Input placeholder="Please enter the game's roomKey" onChange={(e) => setroomKey(e.target.value)} w="50%" />
-      <Button bgColor="Orange" onClick={async () => { await fetchRoom(); }}>Refresh</Button>
+      <Input placeholder="Please enter the game's roomKey" onChange={(e) => setRoomKey(e.target.value)} w="50%" />
       <Flex direction="row" justifyContent="space-around" w="100%">
         <Flex border="1px" borderColor="white" direction="column" alignItems="center">
           <Heading>Players</Heading>
@@ -51,7 +55,7 @@ export default function Room() {
             bgColor="red"
             type="button"
             onClick={() => {
-              mutateChangeRoomStatus(roomId, roomKey, 'OPEN');
+              mutateChangeRoomStatus({ code: roomId, roomKey, status: 'OPEN' });
             }}
           >
             Open Room
@@ -60,7 +64,7 @@ export default function Room() {
             bgColor="blue"
             type="button"
             onClick={() => {
-              mutateChangeRoomStatus(roomId, roomKey, 'IN_PROGRESS');
+              mutateChangeRoomStatus({ code: roomId, roomKey, status: 'IN_PROGRESS' });
             }}
           >
             Start Game!
@@ -69,7 +73,7 @@ export default function Room() {
             bgColor="black"
             type="button"
             onClick={() => {
-              mutateSubmitAnswer(roomId, name, roomKey);
+              mutateSubmitAnswer({ roomId, player: name, response: roomKey });
             }}
           >
             Force Answers!

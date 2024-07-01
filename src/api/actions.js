@@ -6,17 +6,18 @@ import useBoundStore from '../store';
 
 export const GET_ROOM_KEY = 'GET_ROOM';
 
-const setName = useBoundStore((state) => state.setName);
-const setIsAdmin = useBoundStore((state) => state.setIsAdmin);
-
 export const createRoom = () => {
   const queryClient = useQueryClient();
+
+  const setName = useBoundStore((state) => state.setName);
+  const setIsAdmin = useBoundStore((state) => state.setIsAdmin);
+
   const navigate = useNavigate();
 
   return useMutation({
     mutationFn: async (req) => {
       return axios
-        .post(`${API_CLIENT}/rooms`, { name: req.creator, roomKey: req.roomKey, questions: req.questions })
+        .post(`${API_CLIENT}/rooms`, { creator: req.creator, roomKey: req.roomKey, questions: req.questions })
         .then((res) => {
           setName(req.creator);
           setIsAdmin(true);
@@ -29,7 +30,7 @@ export const createRoom = () => {
     },
     onSuccess: (payload) => {
       queryClient.invalidateQueries({ queryKey: GET_ROOM_KEY });
-      // navigate(`/rooms/${vals.payload.id}`); TODO
+      navigate(`/rooms/${payload.id}`);
     },
   });
 };
@@ -53,7 +54,9 @@ export const getRoom = (roomId) => {
 
 export const joinRoom = () => {
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
+
+  const setName = useBoundStore((state) => state.setName);
+  const setIsAdmin = useBoundStore((state) => state.setIsAdmin);
 
   return useMutation({
     mutationFn: async (req) => {
@@ -84,6 +87,7 @@ export const changeRoomStatus = () => {
   return useMutation({
     mutationFn: async (req) => {
       const { code, roomKey, status } = req;
+      console.log(code, roomKey, status);
 
       return axios
         .patch(`${API_CLIENT}/rooms/${code}`, { roomKey, status })
