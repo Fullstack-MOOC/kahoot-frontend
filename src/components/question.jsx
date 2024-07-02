@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import * as React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   FormErrorMessage,
@@ -11,17 +11,26 @@ import {
   Box,
   Heading,
   Text,
+  Flex,
 } from '@chakra-ui/react';
 import { useNavigate, useParams } from 'react-router';
 import { useLocation } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import colors from '../styles';
-import { getRoom, submitAnswer } from '../api/actions';
+import {
+  getRoom,
+  submitAnswer,
+  GET_ROOM_KEY,
+} from '../api/actions';
+import { getName } from '../utils/localStorage';
+import { RoomStates } from '../utils/constants';
 import useBoundStore from '../store';
 
 export default function Question() {
   const location = useLocation();
   const { roomId, questionNumber } = useParams();
   const navigate = useNavigate();
+  const [roomKey, setRoomKey] = useState('');
 
   const {
     handleSubmit,
@@ -32,10 +41,13 @@ export default function Question() {
   const { data: room, isLoading: isRoomLoading } = getRoom(roomId);
   const { mutate: mutateSubmitAnswer } = submitAnswer();
 
-  const name = useBoundStore((state) => state.name);
+  const name = getName();
+  const lastSubmission = useBoundStore((state) => state.lastSubmission);
+
+  const queryClient = useQueryClient();
 
   function onSubmit(values) {
-    mutateSubmitAnswer({ roomId, name, response: values.answer });
+    mutateSubmitAnswer({ roomId, player: name, response: values.answer });
   }
   if (isRoomLoading || !room.currentQuestion) {
     return (
@@ -43,29 +55,82 @@ export default function Question() {
         <Text>Loading question....</Text>
       </Box>
     );
-  } else {
+  } else if (lastSubmission && lastSubmission.questionNumber === room.currentQuestionNumber) {
     return (
-      <Box bg={colors.accent3}><Heading>Question #{room.currentQuestionNumber + 1}: {room.currentQuestion}</Heading>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <FormControl isInvalid={errors.answer}>
-            <FormLabel htmlFor="code">Answer</FormLabel>
-            <Input
-              id="answer"
-              placeholder="your answer"
-              {...register('answer', {
-                required: 'This is required',
-              })}
-            />
-            <FormErrorMessage>
-              {errors.answer && errors.answer.message}
-            </FormErrorMessage>
-          </FormControl>
+      <Box>
+        <Box bg={colors.accent3}>
           <Center>
-            <Button mt={4} colorScheme="teal" isLoading={isSubmitting} type="submit">
-              Answer
+            <Heading>{ lastSubmission.correct ? 'Correct' : 'Incorrect' }</Heading>
+          </Center>
+          <Center>
+            <Text>Your rank: {room.yourRank}</Text>
+          </Center>
+          {
+            // TODO: This below might not be necessary
+          }
+          <Center>
+            <Button
+              bgColor="black"
+              type="button"
+              onClick={async () => {
+                await queryClient.invalidateQueries({ queryKey: [GET_ROOM_KEY, roomId] });
+              }}
+              marginTop={5}
+            >
+              Force Reload
             </Button>
           </Center>
-        </form>
+        </Box>
+      </Box>
+    );
+  } else {
+    return (
+      <Box>
+        <Box bg={colors.accent3}>
+          <Heading>Question #{room.currentQuestionNumber + 1}: {room.currentQuestion}</Heading>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <FormControl isInvalid={errors.answer}>
+              <FormLabel htmlFor="code">Answer</FormLabel>
+              <Input
+                id="answer"
+                placeholder="your answer"
+                {...register('answer', {
+                  required: 'This is required',
+                })}
+              />
+              <FormErrorMessage>
+                {errors.answer && errors.answer.message}
+              </FormErrorMessage>
+            </FormControl>
+            <Center>
+              <Button mt={4} colorScheme="teal" isLoading={isSubmitting} type="submit">
+                Answer
+              </Button>
+            </Center>
+          </form>
+        </Box>
+        {
+          room.isAdmin && (
+            <Flex border="1px" borderColor="white" direction="column" justifyContent="space-evenly" alignItems="center" marginTop={10}>
+              <Heading>Admin Controls</Heading>
+              <Input placeholder="Please enter the game's roomKey to access Admin Controls" onChange={(e) => setRoomKey(e.target.value)} w="50%" marginTop={5} />
+              {
+                room.status === RoomStates.IN_PROGRESS && (
+                  <Button
+                    bgColor="black"
+                    type="button"
+                    onClick={() => {
+                      mutateSubmitAnswer({ roomId, player: name, response: roomKey });
+                    }}
+                    marginTop={5}
+                  >
+                    Force Answers!
+                  </Button>
+                )
+              }
+            </Flex>
+          )
+        }
       </Box>
     );
   }

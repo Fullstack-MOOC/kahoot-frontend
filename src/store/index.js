@@ -1,8 +1,8 @@
 import { create } from 'zustand';
-import userSlice from './slices/userSlice';
+import submissionSlice from './slices/submissionSlice';
 
 const useBoundStore = create((...a) => ({
-  ...userSlice(...a),
+  ...submissionSlice(...a),
 }));
 
 export default useBoundStore;

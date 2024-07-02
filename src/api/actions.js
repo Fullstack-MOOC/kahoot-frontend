@@ -2,15 +2,13 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
 import { API_CLIENT } from '../utils/constants';
+import { getName, setName } from '../utils/localStorage';
 import useBoundStore from '../store';
 
 export const GET_ROOM_KEY = 'GET_ROOM';
 
 export const createRoom = () => {
   const queryClient = useQueryClient();
-
-  const setName = useBoundStore((state) => state.setName);
-  const setIsAdmin = useBoundStore((state) => state.setIsAdmin);
 
   const navigate = useNavigate();
 
@@ -20,7 +18,6 @@ export const createRoom = () => {
         .post(`${API_CLIENT}/rooms`, { creator: req.creator, roomKey: req.roomKey, questions: req.questions })
         .then((res) => {
           setName(req.creator);
-          setIsAdmin(true);
           return res.data;
         })
         .catch((error) => {
@@ -28,19 +25,21 @@ export const createRoom = () => {
           throw error;
         });
     },
-    onSuccess: (payload) => {
-      queryClient.invalidateQueries({ queryKey: GET_ROOM_KEY });
+    onSuccess: async (payload) => {
+      await queryClient.invalidateQueries({ queryKey: [GET_ROOM_KEY, payload.id] });
       navigate(`/rooms/${payload.id}`);
     },
   });
 };
 
 export const getRoom = (roomId) => {
+  const name = getName();
+
   return useQuery({
     queryKey: [GET_ROOM_KEY, roomId],
     queryFn: async () => {
       return axios
-        .get(`${API_CLIENT}/rooms/${roomId}`)
+        .get(`${API_CLIENT}/rooms/${roomId}?player=${name}`)
         .then((response) => {
           return response.data;
         })
@@ -55,8 +54,7 @@ export const getRoom = (roomId) => {
 export const joinRoom = () => {
   const queryClient = useQueryClient();
 
-  const setName = useBoundStore((state) => state.setName);
-  const setIsAdmin = useBoundStore((state) => state.setIsAdmin);
+  const navigate = useNavigate();
 
   return useMutation({
     mutationFn: async (req) => {
@@ -66,7 +64,6 @@ export const joinRoom = () => {
         .post(`${API_CLIENT}/rooms/${code}`, { name })
         .then((res) => {
           setName(name);
-          setIsAdmin(false);
           return res.data;
         })
         .catch((error) => {
@@ -74,8 +71,9 @@ export const joinRoom = () => {
           throw error;
         });
     },
-    onSuccess: (payload) => {
-      queryClient.invalidateQueries({ queryKey: GET_ROOM_KEY });
+    onSuccess: async (payload) => {
+      await queryClient.invalidateQueries({ queryKey: [GET_ROOM_KEY, payload.roomId] });
+      navigate(`/rooms/${payload.roomId}`);
     },
   });
 };
@@ -98,8 +96,8 @@ export const changeRoomStatus = () => {
           throw error;
         });
     },
-    onSuccess: (payload) => {
-      queryClient.invalidateQueries({ queryKey: GET_ROOM_KEY });
+    onSuccess: async (payload) => {
+      await queryClient.invalidateQueries({ queryKey: [GET_ROOM_KEY, payload.id] });
     },
   });
 };
@@ -108,6 +106,7 @@ export const submitAnswer = () => {
   const queryClient = useQueryClient();
 
   const navigate = useNavigate();
+  const setLastSubmission = useBoundStore((state) => state.setLastSubmission);
 
   return useMutation({
     mutationFn: async (req) => {
@@ -123,8 +122,13 @@ export const submitAnswer = () => {
           throw error;
         });
     },
-    onSuccess: (payload) => {
-      queryClient.invalidateQueries({ queryKey: GET_ROOM_KEY });
+    onSuccess: async (payload) => {
+      await queryClient.invalidateQueries({ queryKey: [GET_ROOM_KEY, payload.roomId] });
+      setLastSubmission(payload);
     },
   });
+};
+
+export const getLastSubmsision = () => {
+  return '';
 };
