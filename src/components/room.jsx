@@ -14,6 +14,8 @@ import {
 } from '@chakra-ui/react';
 import { getRoom, changeRoomStatus, submitAnswer } from '../api/actions';
 import useBoundStore from '../store';
+import { RoomStates } from '../utils/constants';
+import Question from './question';
 
 export default function Room() {
   const { roomId } = useParams();
@@ -29,16 +31,47 @@ export default function Room() {
 
   const name = useBoundStore((state) => state.name);
 
-  // TODO: Add Toast banners
-
+  if (!room) {
+    return (
+      <Flex direction="column" align="center">
+        <Text>Room does not exist</Text>
+      </Flex>
+    );
+  }
+  if (!players.includes(name) && room.status === RoomStates.IN_PROGRESS) {
+    return (
+      <Question />
+    );
+  }
+  if (!players.includes(name) && room.status === RoomStates.IN_PROGRESS) {
+    return (
+      <Flex direction="column" align="center">
+        <Text>Game has already started</Text>
+      </Flex>
+    );
+  }
+  if (!players.includes(name) && room.status === RoomStates.GAME_OVER) {
+    return (
+      <Flex direction="column" align="center">
+        <Text>Game has already ended</Text>
+      </Flex>
+    );
+  }
   return (
-    <Flex direction="column" align="center" height="100vh" w="100vw">
-      <Heading justify="center">Admin Page</Heading>
+    <Flex direction="column" align="center">
       <Box>
-        <Text>You&apos;ve successfully created a room with ID <strong>{roomId}</strong>.</Text>
+        <Heading justify="center">
+          Waiting Room
+        </Heading>
+      </Box>
+      {
+        JSON.stringify(room)
+      }
+      <Box>
+        <Text>Room ID: <strong>{roomId}</strong>.</Text>
         <Text>Share it with your friends! <a href={`/join?room=${roomId}`}>/join?room={roomId}</a></Text>
       </Box>
-      <Input placeholder="Please enter the game's roomKey" onChange={(e) => setRoomKey(e.target.value)} w="50%" />
+      <Input placeholder="Please enter the game's roomKey to access Admin Controls" onChange={(e) => setRoomKey(e.target.value)} w="50%" />
       <Flex direction="row" justifyContent="space-around" w="100%">
         <Flex border="1px" borderColor="white" direction="column" alignItems="center">
           <Heading>Players</Heading>
@@ -50,40 +83,46 @@ export default function Room() {
 
         </Flex>
         <Flex border="1px" borderColor="white" direction="column" justifyContent="space-evenly" alignItems="center">
-          <Heading>Controls</Heading>
-          <Button
-            bgColor="red"
-            type="button"
-            onClick={() => {
-              mutateChangeRoomStatus({ code: roomId, roomKey, status: 'OPEN' });
-            }}
-          >
-            Open Room
-          </Button>
-          <Button
-            bgColor="blue"
-            type="button"
-            onClick={() => {
-              mutateChangeRoomStatus({ code: roomId, roomKey, status: 'IN_PROGRESS' });
-            }}
-          >
-            Start Game!
-          </Button>
-          <Button
-            bgColor="black"
-            type="button"
-            onClick={() => {
-              mutateSubmitAnswer({ roomId, player: name, response: roomKey });
-            }}
-          >
-            Force Answers!
-          </Button>
-        </Flex>
-        <Flex direction="column" border="1px" borderColor="white" alignItems="center">
-          <Heading>Status</Heading>
-          <Heading as="h4" size="lg">{status}</Heading>
-          <Heading>Curr Q</Heading>
-          <Heading as="h4" size="lg" color="green">{currQuestionNum}</Heading>
+          <Heading>Admin Controls</Heading>
+          {
+            room.status === RoomStates.CLOSED && (
+              <Button
+                bgColor="red"
+                type="button"
+                onClick={() => {
+                  mutateChangeRoomStatus({ code: roomId, roomKey, status: RoomStates.OPEN });
+                }}
+              >
+                Open Room
+              </Button>
+            )
+          }
+          {
+            room.status === RoomStates.OPEN && (
+              <Button
+                bgColor="blue"
+                type="button"
+                onClick={() => {
+                  mutateChangeRoomStatus({ code: roomId, roomKey, status: 'IN_PROGRESS' });
+                }}
+              >
+                Start Game!
+              </Button>
+            )
+          }
+          {
+            room.status === RoomStates.IN_PROGRESS && (
+              <Button
+                bgColor="black"
+                type="button"
+                onClick={() => {
+                  mutateSubmitAnswer({ roomId, player: name, response: roomKey });
+                }}
+              >
+                Force Answers!
+              </Button>
+            )
+          }
         </Flex>
       </Flex>
     </Flex>

@@ -109,9 +109,6 @@ export default function JoinGame() {
             Join
           </Button>
         </Center>
-        <Center>
-          <Button mt={4} colorScheme="teal"><NavLink to="/rooms/629580c3074e542edb5d5946/questions/0">test question</NavLink></Button>
-        </Center>
       </form>
       <Center>
         <Text>No game to join? <NavLink to="/create" style={{ textDecoration: 'underline' }}>Create a new game here.</NavLink></Text>

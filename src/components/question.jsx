@@ -37,9 +37,15 @@ export default function Question() {
   function onSubmit(values) {
     mutateSubmitAnswer({ roomId, name, response: values.answer });
   }
-  if (!isRoomLoading && !room.currentQuestion) {
+  if (isRoomLoading || !room.currentQuestion) {
     return (
-      <Box bg={colors.accent3}><Heading>Question #{parseInt(questionNumber, 10) + 1}: {room.currentQuestion}</Heading>
+      <Box>
+        <Text>Loading question....</Text>
+      </Box>
+    );
+  } else {
+    return (
+      <Box bg={colors.accent3}><Heading>Question #{room.currentQuestionNumber + 1}: {room.currentQuestion}</Heading>
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormControl isInvalid={errors.answer}>
             <FormLabel htmlFor="code">Answer</FormLabel>
@@ -60,12 +66,6 @@ export default function Question() {
             </Button>
           </Center>
         </form>
-      </Box>
-    );
-  } else {
-    return (
-      <Box>
-        <Text>Loading question....</Text>
       </Box>
     );
   }

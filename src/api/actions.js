@@ -76,7 +76,6 @@ export const joinRoom = () => {
     },
     onSuccess: (payload) => {
       queryClient.invalidateQueries({ queryKey: GET_ROOM_KEY });
-      // navigate(`/rooms/${values.code}/questions/0`); TODO
     },
   });
 };
@@ -108,6 +107,8 @@ export const changeRoomStatus = () => {
 export const submitAnswer = () => {
   const queryClient = useQueryClient();
 
+  const navigate = useNavigate();
+
   return useMutation({
     mutationFn: async (req) => {
       const { roomId, player, response } = req;
@@ -124,7 +125,6 @@ export const submitAnswer = () => {
     },
     onSuccess: (payload) => {
       queryClient.invalidateQueries({ queryKey: GET_ROOM_KEY });
-      // navigate(`${urlSplit[0]}/questions/${parseInt(urlSplit[1], 10) + 1}`);
     },
   });
 };
