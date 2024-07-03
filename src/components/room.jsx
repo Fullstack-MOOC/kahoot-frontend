@@ -15,7 +15,7 @@ import {
 import { getRoom, changeRoomStatus } from '../api/actions';
 import { RoomStates } from '../utils/constants';
 import Question from './question';
-import { getName } from '../utils/localStorage';
+import useBoundStore from '../store';
 
 export default function Room() {
   const { roomId } = useParams();
@@ -26,7 +26,7 @@ export default function Room() {
 
   const { mutate: mutateChangeRoomStatus } = changeRoomStatus();
 
-  const name = getName();
+  const name = useBoundStore((state) => state.name);
 
   if (isRoomLoading) {
     return (
@@ -89,7 +89,7 @@ export default function Room() {
       </Box>
       <Flex direction="row" justifyContent="space-around" w="100%">
         <Flex border="1px" borderColor="white" direction="column" alignItems="center">
-          <Heading>Players</Heading>
+          <Heading marginBottom={5}>Players</Heading>
           <List>
             {players && players.map((player, index) => {
               return <ListItem key={`${player}`}>{player}</ListItem>;

@@ -2,7 +2,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
 import { API_CLIENT } from '../utils/constants';
-import { getName, setName } from '../utils/localStorage';
 import useBoundStore from '../store';
 
 export const GET_ROOM_KEY = 'GET_ROOM';
@@ -11,13 +10,14 @@ export const createRoom = () => {
   const queryClient = useQueryClient();
 
   const navigate = useNavigate();
+  const setUserName = useBoundStore((state) => state.setUserName);
 
   return useMutation({
     mutationFn: async (req) => {
       return axios
         .post(`${API_CLIENT}/rooms`, { creator: req.creator, roomKey: req.roomKey, questions: req.questions })
         .then((res) => {
-          setName(req.creator);
+          setUserName(req.creator);
           return res.data;
         })
         .catch((error) => {
@@ -33,7 +33,7 @@ export const createRoom = () => {
 };
 
 export const getRoom = (roomId) => {
-  const name = getName();
+  const name = useBoundStore((state) => state.name);
 
   return useQuery({
     queryKey: [GET_ROOM_KEY, roomId],
@@ -55,6 +55,7 @@ export const joinRoom = () => {
   const queryClient = useQueryClient();
 
   const navigate = useNavigate();
+  const setUserName = useBoundStore((state) => state.setUserName);
 
   return useMutation({
     mutationFn: async (req) => {
@@ -63,7 +64,7 @@ export const joinRoom = () => {
       return axios
         .post(`${API_CLIENT}/rooms/${code}`, { name })
         .then((res) => {
-          setName(name);
+          setUserName(name);
           return res.data;
         })
         .catch((error) => {

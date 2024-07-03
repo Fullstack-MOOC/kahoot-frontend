@@ -22,7 +22,6 @@ import {
   submitAnswer,
   GET_ROOM_KEY,
 } from '../api/actions';
-import { getName } from '../utils/localStorage';
 import { RoomStates } from '../utils/constants';
 import useBoundStore from '../store';
 
@@ -41,7 +40,7 @@ export default function Question() {
   const { data: room, isLoading: isRoomLoading } = getRoom(roomId);
   const { mutate: mutateSubmitAnswer } = submitAnswer();
 
-  const name = getName();
+  const name = useBoundStore((state) => state.name);
   const lastSubmission = useBoundStore((state) => state.lastSubmission);
 
   const queryClient = useQueryClient();
