@@ -67,7 +67,9 @@ export default function CreateGame() {
               minLength: { value: 4, message: 'Minimum length should be 4' },
             })}
           />
-          <FormErrorMessage>
+          <FormErrorMessage
+            data-cy="error-message-name"
+          >
             {errors.creator && errors.creator.message}
           </FormErrorMessage>
         </FormControl>
@@ -80,7 +82,9 @@ export default function CreateGame() {
               minLength: { value: 4, message: 'Minimum length should be 4' },
             })}
           />
-          <FormErrorMessage>
+          <FormErrorMessage
+            data-cy="error-message-room-key"
+          >
             {errors.roomKey && errors.roomKey.message}
           </FormErrorMessage>
         </FormControl>
@@ -101,12 +105,20 @@ export default function CreateGame() {
               required: 'Questions are required',
             })}
           />
-          <FormErrorMessage>
+          <FormErrorMessage
+            data-cy="error-message-question-responses"
+          >
             {errors.questions && errors.questions.message}
           </FormErrorMessage>
         </FormControl>
         <Center>
-          <Button mt={4} colorScheme="teal" isLoading={isSubmitting} type="submit">
+          <Button 
+            mt={4} 
+            colorScheme="teal" 
+            isLoading={isSubmitting} 
+            type="submit"
+            data-cy="submit-button"
+          >
             Submit
           </Button>
         </Center>
