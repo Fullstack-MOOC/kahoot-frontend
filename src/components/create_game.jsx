@@ -52,7 +52,7 @@ export default function CreateGame() {
   }
 
   return (
-    <Box bg={colors.accent3} w="70vw">
+    <Box bg={colors.accent3} marginTop={10}>
       <Center>
         <Heading>Create a New Room!</Heading>
       </Center>

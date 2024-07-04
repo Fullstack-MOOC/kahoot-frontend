@@ -82,7 +82,7 @@ export default function JoinGame() {
   };
 
   return (
-    <Box bg={colors.accent3} w="70vw">
+    <Box bg={colors.accent3} marginTop={10}>
       <Center>
         <Heading>Join an Existing Game!</Heading>
       </Center>

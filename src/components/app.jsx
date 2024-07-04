@@ -3,7 +3,7 @@ import {
   BrowserRouter, Routes, Route,
 } from 'react-router-dom';
 import {
-  extendTheme, ChakraProvider, CSSReset, Box,
+  extendTheme, ChakraProvider, CSSReset, Box, Container,
 } from '@chakra-ui/react';
 import Home from './home';
 import CreateGame from './create_game';
@@ -69,16 +69,18 @@ function FallBack(props) {
 function App() {
   return (
     <ChakraProvider theme={theme}>
-      <CSSReset />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/create" element={<Box p={4}><CreateGame /></Box>} />
-          <Route path="/join" element={<Box p={4}><JoinGame /></Box>} />
-          <Route path="/rooms/:roomId" element={<Room />} />
-          <Route path="*" element={<FallBack />} />
-        </Routes>
-      </BrowserRouter>
+      <Container minHeight="100vh" minWidth="100vh">
+        <CSSReset />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/create" element={<CreateGame />} />
+            <Route path="/join" element={<JoinGame />} />
+            <Route path="/rooms/:roomId" element={<Room />} />
+            <Route path="*" element={<FallBack />} />
+          </Routes>
+        </BrowserRouter>
+      </Container>
     </ChakraProvider>
   );
 }

@@ -10,7 +10,7 @@ const useBoundStore = create(
       ...userSlice(...a),
     }),
     {
-      name: 'kahoot-storage', // name of the item in the storage (must be unique)
+      name: 'kahoot-storage',
     },
   ),
 );
