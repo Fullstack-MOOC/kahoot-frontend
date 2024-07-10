@@ -66,6 +66,7 @@ export default function CreateGame() {
               required: 'This is required',
               minLength: { value: 4, message: 'Minimum length should be 4' },
             })}
+            data-cy="input-message-name"
           />
           <FormErrorMessage
             data-cy="error-message-name"
@@ -81,6 +82,7 @@ export default function CreateGame() {
               required: 'This is required',
               minLength: { value: 4, message: 'Minimum length should be 4' },
             })}
+            data-cy="input-room-key"
           />
           <FormErrorMessage
             data-cy="error-message-room-key"
@@ -104,6 +106,7 @@ export default function CreateGame() {
             {...register('questions', {
               required: 'Questions are required',
             })}
+            data-cy="input-question-responses"
           />
           <FormErrorMessage
             data-cy="error-message-question-responses"
@@ -112,10 +115,10 @@ export default function CreateGame() {
           </FormErrorMessage>
         </FormControl>
         <Center>
-          <Button 
-            mt={4} 
-            colorScheme="teal" 
-            isLoading={isSubmitting} 
+          <Button
+            mt={4}
+            colorScheme="teal"
+            isLoading={isSubmitting}
             type="submit"
             data-cy="submit-button"
           >

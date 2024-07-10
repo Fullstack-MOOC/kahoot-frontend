@@ -59,7 +59,7 @@ export default function Question() {
       <Box>
         <Box bg={colors.accent3}>
           <Center>
-            <Heading>{ lastSubmission.correct ? 'Correct' : 'Incorrect' }</Heading>
+            <Heading data-cy="question-result">{ lastSubmission.correct ? 'Correct' : 'Incorrect' }</Heading>
           </Center>
           <Center>
             <Text>Your rank: {room.yourRank}</Text>
@@ -86,7 +86,7 @@ export default function Question() {
     return (
       <Box>
         <Box bg={colors.accent3}>
-          <Heading>Question #{room.currentQuestionNumber + 1}: {room.currentQuestion}</Heading>
+          <Heading data-cy="question-heading">Question #{room.currentQuestionNumber + 1}: {room.currentQuestion}</Heading>
           <form onSubmit={handleSubmit(onSubmit)}>
             <FormControl isInvalid={errors.answer}>
               <FormLabel htmlFor="code">Answer</FormLabel>
@@ -96,13 +96,14 @@ export default function Question() {
                 {...register('answer', {
                   required: 'This is required',
                 })}
+                data-cy="question-answer-input"
               />
               <FormErrorMessage>
                 {errors.answer && errors.answer.message}
               </FormErrorMessage>
             </FormControl>
             <Center>
-              <Button mt={4} colorScheme="teal" isLoading={isSubmitting} type="submit">
+              <Button mt={4} colorScheme="teal" isLoading={isSubmitting} type="submit" data-cy="submit-button">
                 Answer
               </Button>
             </Center>
@@ -122,6 +123,7 @@ export default function Question() {
                       mutateSubmitAnswer({ roomId, player: name, response: roomKey });
                     }}
                     marginTop={5}
+                    data-cy="force-answers-button"
                   >
                     Force Answers!
                   </Button>

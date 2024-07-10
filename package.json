@@ -8,7 +8,8 @@
     "serve": "NODE_ENV=development vite preview",
     "test": "eslint src",
     "build": "npm run clean; NODE_ENV=production vite build",
-    "clean": "rimraf dist"
+    "clean": "rimraf dist",
+    "cypress": "npx cypress open"
   },
   "repository": {
     "type": "git",
@@ -51,7 +52,6 @@
     "sass": "^1.50.0",
     "sass-loader": "^12.6.0",
     "style-loader": "^3.3.1",
-    "webpack": "^5.72.0",
     "webpack-cli": "^4.9.2",
     "webpack-dev-server": "^4.8.1"
   },
@@ -76,7 +76,7 @@
     "react-textarea-autosize": "^8.3.4",
     "redux": "^4.2.0",
     "redux-thunk": "^2.4.1",
-    "vite": "^5.2.11",
+    "vite": "^5.3.3",
     "zustand": "^4.5.4"
   }
 }
