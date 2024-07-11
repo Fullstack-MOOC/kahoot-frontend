@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
+import toast from 'react-hot-toast';
 import { API_CLIENT } from '../utils/constants';
 import useBoundStore from '../store';
 
@@ -30,6 +31,9 @@ export const createRoom = () => {
       await queryClient.invalidateQueries({ queryKey: [GET_ROOM_KEY, payload.id] });
       navigate(`/rooms/${payload.id}`);
       setLastSubmission(null);
+    },
+    onError: (error) => {
+      toast.error(`Something went wrong: ${error.message}`);
     },
   });
 };
@@ -78,6 +82,9 @@ export const joinRoom = () => {
       await queryClient.invalidateQueries({ queryKey: [GET_ROOM_KEY, payload.roomId] });
       navigate(`/rooms/${payload.roomId}`);
     },
+    onError: (error) => {
+      toast.error(`Something went wrong: ${error.message}`);
+    },
   });
 };
 
@@ -87,7 +94,6 @@ export const changeRoomStatus = () => {
   return useMutation({
     mutationFn: async (req) => {
       const { code, roomKey, status } = req;
-      console.log(code, roomKey, status);
 
       return axios
         .patch(`${API_CLIENT}/rooms/${code}`, { roomKey, status })
@@ -101,6 +107,9 @@ export const changeRoomStatus = () => {
     },
     onSuccess: async (payload) => {
       await queryClient.invalidateQueries({ queryKey: [GET_ROOM_KEY, payload.id] });
+    },
+    onError: (error) => {
+      toast.error(`Something went wrong: ${error.message}`);
     },
   });
 };
@@ -128,6 +137,9 @@ export const submitAnswer = () => {
       await queryClient.invalidateQueries({ queryKey: [GET_ROOM_KEY, payload.roomId] });
       setLastSubmission(payload);
     },
+    onError: (error) => {
+      toast.error(`Something went wrong: ${error.message}`);
+    },
   });
 };
 
@@ -153,6 +165,9 @@ export const forceSubmitAnswer = () => {
     onSuccess: async (payload) => {
       await queryClient.invalidateQueries({ queryKey: [GET_ROOM_KEY, payload.roomId] });
       setLastSubmission(payload);
+    },
+    onError: (error) => {
+      toast.error(`Something went wrong: ${error.message}`);
     },
   });
 };

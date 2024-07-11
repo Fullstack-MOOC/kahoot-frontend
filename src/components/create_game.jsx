@@ -34,7 +34,6 @@ export default function CreateGame() {
   function onSubmit(values) {
     // eslint-disable-next-line no-param-reassign
     values.questions = values.questions.replace(/\n|\r/g, '');
-    console.log('Called submit', values.questions);
     // eslint-disable-next-line no-param-reassign
     values.questions = JSON.parse(values.questions);
 

@@ -32,7 +32,6 @@ export default function JoinGame() {
   const roomId = searchParams.get('room');
 
   function onSubmit(values) {
-    console.log(values);
     if (roomId) {
       // eslint-disable-next-line no-param-reassign
       values.code = roomId;
@@ -47,8 +46,6 @@ export default function JoinGame() {
       axios.get(`${API_CLIENT}/rooms/${code}`)
         .then((res) => {
           const response = res.data;
-          console.log('the code is valid!');
-          console.log(response);
         });
     } catch (e) {
       return 'Invalid game code. Check again.';

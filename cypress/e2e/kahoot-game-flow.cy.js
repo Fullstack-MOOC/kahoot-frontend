@@ -111,8 +111,6 @@ describe('Players join', () => {
         expect(res.response.body.questionNumber).to.eq(0);
       });
     cy.get('[aria-label="question-result"]').should('have.text', 'Incorrect');
-
-    // TODO: example of .find
   });
 });
 
@@ -127,8 +125,8 @@ describe('Late players attempt to join', () => {
     cy.wait('@post')
       .then((res) => {
         expect(res.response.statusCode).to.eq(422);
+        cy.get('div[aria-live="polite"]').should('exist');
       });
-    // TODO: visible toastify errors on frontend
   });
 });
 
@@ -272,6 +270,7 @@ describe('admin forces move on 4th question since Alice is AFK', () => {
     cy.wait('@post')
       .then((res) => {
         expect(res.response.statusCode).to.eq(422);
+        cy.get('div[aria-live="polite"]').should('exist');
       });
   });
 
@@ -338,6 +337,7 @@ describe('Player attempt to join room after game has ended', () => {
     cy.wait('@post')
       .then((res) => {
         expect(res.response.statusCode).to.eq(422);
+        cy.get('div[aria-live="polite"]').should('exist');
       });
   });
 });
