@@ -67,6 +67,9 @@ export default function Question() {
           {
             // TODO: This below might not be necessary
           }
+          {
+            JSON.stringify(lastSubmission)
+          }
           <Center>
             <Button
               bgColor="black"

@@ -11,6 +11,7 @@ export const createRoom = () => {
 
   const navigate = useNavigate();
   const setUserName = useBoundStore((state) => state.setUserName);
+  const setLastSubmission = useBoundStore((state) => state.setLastSubmission);
 
   return useMutation({
     mutationFn: async (req) => {
@@ -28,6 +29,7 @@ export const createRoom = () => {
     onSuccess: async (payload) => {
       await queryClient.invalidateQueries({ queryKey: [GET_ROOM_KEY, payload.id] });
       navigate(`/rooms/${payload.id}`);
+      setLastSubmission(null);
     },
   });
 };
@@ -106,7 +108,6 @@ export const changeRoomStatus = () => {
 export const submitAnswer = () => {
   const queryClient = useQueryClient();
 
-  const navigate = useNavigate();
   const setLastSubmission = useBoundStore((state) => state.setLastSubmission);
 
   return useMutation({
@@ -128,8 +129,4 @@ export const submitAnswer = () => {
       setLastSubmission(payload);
     },
   });
-};
-
-export const getLastSubmsision = () => {
-  return '';
 };

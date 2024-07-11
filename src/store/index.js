@@ -15,4 +15,8 @@ const useBoundStore = create(
   ),
 );
 
+if (window.Cypress) {
+  window.Storage = useBoundStore;
+}
+
 export default useBoundStore;

@@ -1,5 +1,8 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 const { defineConfig } = require('cypress');
+const dotenv = require('dotenv');
+
+const env = dotenv.config('./.env').parsed;
 
 module.exports = defineConfig({
   e2e: {
@@ -11,5 +14,8 @@ module.exports = defineConfig({
       framework: 'react',
       bundler: 'vite',
     },
+  },
+  env: {
+    ...env,
   },
 });
