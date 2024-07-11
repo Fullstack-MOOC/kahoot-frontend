@@ -9,7 +9,8 @@
     "test": "eslint src",
     "build": "npm run clean; NODE_ENV=production vite build",
     "clean": "rimraf dist",
-    "cypress": "npx cypress open"
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
   },
   "repository": {
     "type": "git",
@@ -22,7 +23,7 @@
     "starterpack",
     "starterpack"
   ],
-  "author": "Isabella Hochschild",
+  "author": "Eric Lu",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/dartmouth-cs52-22S/starterpack-isabellahoch/issues"

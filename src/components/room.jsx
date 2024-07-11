@@ -78,21 +78,21 @@ export default function Room() {
   return (
     <Flex direction="column" align="center">
       <Box>
-        <Heading justify="center" data-cy="room-title">
+        <Heading justify="center" aria-label="room-title">
           Waiting Room
         </Heading>
       </Box>
       <Box>
         <Text>Room ID:&nbsp;
           <strong
-            data-cy="room-id"
+            aria-label="room-id"
           >
             {roomId}
           </strong>
         </Text>
         <Text>Your Name:&nbsp;
           <strong
-            data-cy="room-your-name"
+            aria-label="room-your-name"
           >
             {name}
           </strong>
@@ -104,7 +104,7 @@ export default function Room() {
           <Heading marginBottom={5}>Players</Heading>
           <List>
             {players && players.map((player, index) => {
-              return <ListItem key={`${player}`} data-cy={`player-entry-${player}`}>{player}</ListItem>;
+              return <ListItem key={`${player}`} aria-label={`player-entry-${player}`}>{player}</ListItem>;
             })}
           </List>
 
@@ -118,7 +118,7 @@ export default function Room() {
                 onChange={(e) => setRoomKey(e.target.value)}
                 w="50%"
                 marginTop={5}
-                data-cy="room-input-admin-key"
+                aria-label="room-input-admin-key"
               />
               {
                 room.status === RoomStates.CLOSED && (
@@ -129,7 +129,7 @@ export default function Room() {
                       mutateChangeRoomStatus({ code: roomId, roomKey, status: RoomStates.OPEN });
                     }}
                     marginTop={5}
-                    data-cy="room-open-room-button"
+                    aria-label="room-open-room-button"
                   >
                     Open Room
                   </Button>
@@ -144,7 +144,7 @@ export default function Room() {
                       mutateChangeRoomStatus({ code: roomId, roomKey, status: 'IN_PROGRESS' });
                     }}
                     marginTop={5}
-                    data-cy="room-start-game-button"
+                    aria-label="room-start-game-button"
                   >
                     Start Game!
                   </Button>

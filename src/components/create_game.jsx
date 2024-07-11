@@ -66,10 +66,10 @@ export default function CreateGame() {
               required: 'This is required',
               minLength: { value: 4, message: 'Minimum length should be 4' },
             })}
-            data-cy="input-message-name"
+            aria-label="input-message-name"
           />
           <FormErrorMessage
-            data-cy="error-message-name"
+            aria-label="error-message-name"
           >
             {errors.creator && errors.creator.message}
           </FormErrorMessage>
@@ -82,10 +82,10 @@ export default function CreateGame() {
               required: 'This is required',
               minLength: { value: 4, message: 'Minimum length should be 4' },
             })}
-            data-cy="input-room-key"
+            aria-label="input-room-key"
           />
           <FormErrorMessage
-            data-cy="error-message-room-key"
+            aria-label="error-message-room-key"
           >
             {errors.roomKey && errors.roomKey.message}
           </FormErrorMessage>
@@ -106,10 +106,10 @@ export default function CreateGame() {
             {...register('questions', {
               required: 'Questions are required',
             })}
-            data-cy="input-question-responses"
+            aria-label="input-question-responses"
           />
           <FormErrorMessage
-            data-cy="error-message-question-responses"
+            aria-label="error-message-question-responses"
           >
             {errors.questions && errors.questions.message}
           </FormErrorMessage>
@@ -120,7 +120,7 @@ export default function CreateGame() {
             colorScheme="teal"
             isLoading={isSubmitting}
             type="submit"
-            data-cy="submit-button"
+            aria-label="submit-button"
           >
             Submit
           </Button>
