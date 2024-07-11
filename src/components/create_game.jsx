@@ -17,15 +17,13 @@ import {
 } from '@chakra-ui/react';
 import { NavLink } from 'react-router-dom';
 import ResizeTextarea from 'react-textarea-autosize';
-import { useNavigate } from 'react-router';
-import { useDispatch } from 'react-redux';
 import colors from '../styles';
-import { createRoom } from '../actions';
+import { createRoom } from '../api/actions';
 
 export default function CreateGame() {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
   const ref = useRef();
+
+  const { mutate: mutateCreateRoom } = createRoom();
 
   const {
     handleSubmit,
@@ -34,12 +32,12 @@ export default function CreateGame() {
   } = useForm();
 
   function onSubmit(values) {
-    console.log('Called submit');
     // eslint-disable-next-line no-param-reassign
     values.questions = values.questions.replace(/\n|\r/g, '');
     // eslint-disable-next-line no-param-reassign
     values.questions = JSON.parse(values.questions);
-    dispatch(createRoom(values, navigate)).then((vals) => { console.log(vals.payload); navigate(`/rooms/${vals.payload.id}`); });
+
+    mutateCreateRoom(values);
   }
 
   function isJsonString(str) {
@@ -53,13 +51,13 @@ export default function CreateGame() {
   }
 
   return (
-    <Box bg={colors.accent3} w="70vw">
+    <Box bg={colors.accent3} marginTop={10}>
       <Center>
         <Heading>Create a New Room!</Heading>
       </Center>
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormControl isInvalid={errors.creator}>
-          <FormLabel htmlFor="creator">First name</FormLabel>
+          <FormLabel htmlFor="creator">Name</FormLabel>
           <Input
             id="creator"
             placeholder="name"
@@ -67,8 +65,11 @@ export default function CreateGame() {
               required: 'This is required',
               minLength: { value: 4, message: 'Minimum length should be 4' },
             })}
+            aria-label="input-message-name"
           />
-          <FormErrorMessage>
+          <FormErrorMessage
+            aria-label="error-message-name"
+          >
             {errors.creator && errors.creator.message}
           </FormErrorMessage>
         </FormControl>
@@ -80,8 +81,11 @@ export default function CreateGame() {
               required: 'This is required',
               minLength: { value: 4, message: 'Minimum length should be 4' },
             })}
+            aria-label="input-room-key"
           />
-          <FormErrorMessage>
+          <FormErrorMessage
+            aria-label="error-message-room-key"
+          >
             {errors.roomKey && errors.roomKey.message}
           </FormErrorMessage>
         </FormControl>
@@ -101,13 +105,22 @@ export default function CreateGame() {
             {...register('questions', {
               required: 'Questions are required',
             })}
+            aria-label="input-question-responses"
           />
-          <FormErrorMessage>
+          <FormErrorMessage
+            aria-label="error-message-question-responses"
+          >
             {errors.questions && errors.questions.message}
           </FormErrorMessage>
         </FormControl>
         <Center>
-          <Button mt={4} colorScheme="teal" isLoading={isSubmitting} type="submit">
+          <Button
+            mt={4}
+            colorScheme="teal"
+            isLoading={isSubmitting}
+            type="submit"
+            aria-label="submit-button"
+          >
             Submit
           </Button>
         </Center>

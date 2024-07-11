@@ -13,16 +13,14 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { NavLink, useSearchParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router';
 import axios from 'axios';
 import colors from '../styles';
-import { joinRoom } from '../actions';
-import API_CLIENT from '../creds';
+import { API_CLIENT } from '../utils/constants';
+import { joinRoom } from '../api/actions';
 
 export default function JoinGame() {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const { mutate: mutateJoinRoom } = joinRoom();
+
   const {
     handleSubmit,
     register,
@@ -31,17 +29,15 @@ export default function JoinGame() {
 
   const [searchParams] = useSearchParams();
 
-  const roomID = searchParams.get('room');
+  const roomId = searchParams.get('room');
 
   function onSubmit(values) {
-    console.log(values);
-    if (roomID) {
+    if (roomId) {
       // eslint-disable-next-line no-param-reassign
-      values.code = roomID;
+      values.code = roomId;
     }
-    dispatch(joinRoom(values)).unwrap()
-      .then(() => navigate(`/rooms/${values.code}/questions/0`))
-      .catch((error) => console.log(error.message));
+
+    mutateJoinRoom(values);
   }
 
   function isValidCode(code) {
@@ -50,8 +46,6 @@ export default function JoinGame() {
       axios.get(`${API_CLIENT}/rooms/${code}`)
         .then((res) => {
           const response = res.data;
-          console.log('the code is valid!');
-          console.log(response);
         });
     } catch (e) {
       return 'Invalid game code. Check again.';
@@ -60,13 +54,14 @@ export default function JoinGame() {
   }
 
   const renderDependingOnParam = () => {
-    if (roomID) {
+    if (roomId) {
       return (
         <Input
           id="code"
           placeholder="game code"
           isDisabled
-          value={roomID}
+          value={roomId}
+          aria-label="join-game-code-input-disabled"
         />
       );
     }
@@ -80,12 +75,13 @@ export default function JoinGame() {
           required: 'This is required',
           minLength: { value: 6, message: 'Minimum length should be 6' },
         })}
+        aria-label="join-game-code-input"
       />
     );
   };
 
   return (
-    <Box bg={colors.accent3} w="70vw">
+    <Box bg={colors.accent3} marginTop={10}>
       <Center>
         <Heading>Join an Existing Game!</Heading>
       </Center>
@@ -102,18 +98,22 @@ export default function JoinGame() {
           <Input id="name"
             placeholder="be respectful, please."
             {...register('name', { required: 'This is required' })}
+            aria-label="join-game-name-input"
           />
           <FormErrorMessage>
             {errors.name && errors.name.message}
           </FormErrorMessage>
         </FormControl>
         <Center>
-          <Button mt={4} colorScheme="teal" isLoading={isSubmitting} type="submit">
+          <Button
+            mt={4}
+            colorScheme="teal"
+            isLoading={isSubmitting}
+            type="submit"
+            aria-label="submit-button"
+          >
             Join
           </Button>
-        </Center>
-        <Center>
-          <Button mt={4} colorScheme="teal"><NavLink to="/rooms/629580c3074e542edb5d5946/questions/0">test question</NavLink></Button>
         </Center>
       </form>
       <Center>
