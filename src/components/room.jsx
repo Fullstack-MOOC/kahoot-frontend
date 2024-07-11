@@ -56,16 +56,20 @@ export default function Room() {
   }
   if (players.includes(name) && room.status === RoomStates.GAME_OVER) {
     return (
-      <Box>
-        <Text>Game has ended</Text>
-        <Text>Your rank: {room.yourRank}</Text>
-        <Text marginTop={5}>Top3:</Text>
-        <List>
-          {room.top3 && room.top3.map((player, index) => {
-            return <ListItem key={`${player}`}>{index + 1} : {player}</ListItem>;
-          })}
-        </List>
-      </Box>
+      <Flex direction="column" align="center">
+        <Box>
+          <Heading justify="center" aria-label="room-title">Game has ended</Heading>
+        </Box>
+        <Box>
+          <Text aria-label="your-rank">Your rank: {room.yourRank}</Text>
+          <Text marginTop={5}>Top3:</Text>
+          <List>
+            {room.top3 && room.top3.map((player, index) => {
+              return <ListItem key={`${player}`}>{index + 1} : {player}</ListItem>;
+            })}
+          </List>
+        </Box>
+      </Flex>
     );
   }
   if (!players.includes(name) && room.status === RoomStates.GAME_OVER) {

@@ -20,6 +20,7 @@ import colors from '../styles';
 import {
   getRoom,
   submitAnswer,
+  forceSubmitAnswer,
   GET_ROOM_KEY,
 } from '../api/actions';
 import { RoomStates } from '../utils/constants';
@@ -39,6 +40,7 @@ export default function Question() {
 
   const { data: room, isLoading: isRoomLoading } = getRoom(roomId);
   const { mutate: mutateSubmitAnswer } = submitAnswer();
+  const { mutate: mutateForceSubmitAnswer } = forceSubmitAnswer();
 
   const name = useBoundStore((state) => state.name);
   const lastSubmission = useBoundStore((state) => state.lastSubmission);
@@ -116,14 +118,20 @@ export default function Question() {
           room.isAdmin && (
             <Flex border="1px" borderColor="white" direction="column" justifyContent="space-evenly" alignItems="center" marginTop={10}>
               <Heading>Admin Controls</Heading>
-              <Input placeholder="Please enter the game's roomKey to access Admin Controls" onChange={(e) => setRoomKey(e.target.value)} w="50%" marginTop={5} />
+              <Input
+                placeholder="Please enter the game's roomKey to access Admin Controls"
+                onChange={(e) => setRoomKey(e.target.value)}
+                w="50%"
+                marginTop={5}
+                aria-label="force-answers-input"
+              />
               {
                 room.status === RoomStates.IN_PROGRESS && (
                   <Button
                     bgColor="black"
                     type="button"
                     onClick={() => {
-                      mutateSubmitAnswer({ roomId, player: name, response: roomKey });
+                      mutateForceSubmitAnswer({ roomId, roomKey });
                     }}
                     marginTop={5}
                     aria-label="force-answers-button"

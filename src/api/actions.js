@@ -130,3 +130,29 @@ export const submitAnswer = () => {
     },
   });
 };
+
+export const forceSubmitAnswer = () => {
+  const queryClient = useQueryClient();
+
+  const setLastSubmission = useBoundStore((state) => state.setLastSubmission);
+
+  return useMutation({
+    mutationFn: async (req) => {
+      const { roomId, roomKey } = req;
+
+      return axios
+        .post(`${API_CLIENT}/rooms/${roomId}/submissions`, { roomKey, force: true })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((error) => {
+          console.error('submitAnswer error: ', error);
+          throw error;
+        });
+    },
+    onSuccess: async (payload) => {
+      await queryClient.invalidateQueries({ queryKey: [GET_ROOM_KEY, payload.roomId] });
+      setLastSubmission(payload);
+    },
+  });
+};

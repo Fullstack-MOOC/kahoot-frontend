@@ -128,7 +128,7 @@ describe('Late players attempt to join', () => {
       .then((res) => {
         expect(res.response.statusCode).to.eq(422);
       });
-    // TODO: visible error logbox on frontend
+    // TODO: visible toastify errors on frontend
   });
 });
 
@@ -153,6 +153,191 @@ describe('Remaining players submit answers to first question (index 0)', () => {
         expect(res.response.statusCode).to.eq(200);
         expect(res.response.body.correct).to.eq(true);
         expect(res.response.body.questionNumber).to.eq(0);
+      });
+  });
+});
+
+describe('Players submit answers to 2nd question (index 1)', () => {
+  it('admin submits (correct)', () => {
+    cy.visit(''); // root page of website
+    cy.window().then((window) => {
+      // Manually stub zustand state
+      const state = JSON.parse(window.localStorage.getItem('kahoot-storage'));
+      state.state.name = 'Cypress';
+      window.localStorage.setItem('kahoot-storage', JSON.stringify(state));
+    });
+
+    cy.visit(`/rooms/${roomId}`);
+    cy.wait(1000);
+    cy.get('[aria-label="question-heading"]').should('have.text', 'Question #2: What is the best programming language?');
+    cy.get('[aria-label="force-answers-button"]').should('exist');
+    cy.intercept('POST', `${Cypress.env('VITE_REACT_APP_BASE_API_URL')}rooms/${roomId}/submissions`).as('post');
+    cy.get('[aria-label="question-answer-input"]').type('JavaScript');
+    cy.get('[aria-label="submit-button"]').click();
+    cy.wait('@post')
+      .then((res) => {
+        expect(res.response.statusCode).to.eq(200);
+        expect(res.response.body.correct).to.eq(true);
+        expect(res.response.body.questionNumber).to.eq(1);
+      });
+  });
+
+  it('Alice submits (correct)', () => {
+    cy.visit(''); // root page of website
+    cy.window().then((window) => {
+      // Manually stub zustand state
+      const state = JSON.parse(window.localStorage.getItem('kahoot-storage'));
+      state.state.name = 'Alice';
+      window.localStorage.setItem('kahoot-storage', JSON.stringify(state));
+    });
+
+    cy.visit(`/rooms/${roomId}`);
+    cy.get('[aria-label="question-heading"]').should('have.text', 'Question #2: What is the best programming language?');
+    cy.get('[aria-label="force-answers-button"]').should('not.exist');
+    cy.intercept('POST', `${Cypress.env('VITE_REACT_APP_BASE_API_URL')}rooms/${roomId}/submissions`).as('post');
+    cy.get('[aria-label="question-answer-input"]').type('JavaScript');
+    cy.get('[aria-label="submit-button"]').click();
+    cy.wait('@post')
+      .then((res) => {
+        expect(res.response.statusCode).to.eq(200);
+        expect(res.response.body.correct).to.eq(true);
+        expect(res.response.body.questionNumber).to.eq(1);
+      });
+  });
+});
+
+describe('Players submit answers to 3rd question (index 2)', () => {
+  it('admin submits (incorrect)', () => {
+    cy.visit(''); // root page of website
+    cy.window().then((window) => {
+      // Manually stub zustand state
+      const state = JSON.parse(window.localStorage.getItem('kahoot-storage'));
+      state.state.name = 'Cypress';
+      window.localStorage.setItem('kahoot-storage', JSON.stringify(state));
+    });
+
+    cy.visit(`/rooms/${roomId}`);
+    cy.get('[aria-label="question-heading"]').should('have.text', 'Question #3: What is the answer to Life, the Universe, and Everything');
+    cy.get('[aria-label="force-answers-button"]').should('exist');
+    cy.intercept('POST', `${Cypress.env('VITE_REACT_APP_BASE_API_URL')}rooms/${roomId}/submissions`).as('post');
+    cy.get('[aria-label="question-answer-input"]').type('Cheese');
+    cy.get('[aria-label="submit-button"]').click();
+    cy.wait('@post')
+      .then((res) => {
+        expect(res.response.statusCode).to.eq(200);
+        expect(res.response.body.correct).to.eq(false);
+        expect(res.response.body.questionNumber).to.eq(2);
+      });
+  });
+
+  it('Alice submits (correct)', () => {
+    cy.visit(''); // root page of website
+    cy.window().then((window) => {
+      // Manually stub zustand state
+      const state = JSON.parse(window.localStorage.getItem('kahoot-storage'));
+      state.state.name = 'Alice';
+      window.localStorage.setItem('kahoot-storage', JSON.stringify(state));
+    });
+
+    cy.visit(`/rooms/${roomId}`);
+    cy.get('[aria-label="question-heading"]').should('have.text', 'Question #3: What is the answer to Life, the Universe, and Everything');
+    cy.get('[aria-label="force-answers-button"]').should('not.exist');
+    cy.intercept('POST', `${Cypress.env('VITE_REACT_APP_BASE_API_URL')}rooms/${roomId}/submissions`).as('post');
+    cy.get('[aria-label="question-answer-input"]').type('42');
+    cy.get('[aria-label="submit-button"]').click();
+    cy.wait('@post')
+      .then((res) => {
+        expect(res.response.statusCode).to.eq(200);
+        expect(res.response.body.correct).to.eq(true);
+        expect(res.response.body.questionNumber).to.eq(2);
+      });
+  });
+});
+
+describe('admin forces move on 4th question since Alice is AFK', () => {
+  it('admin fails to force next move (missing key)', () => {
+    cy.visit(''); // root page of website
+    cy.window().then((window) => {
+      // Manually stub zustand state
+      const state = JSON.parse(window.localStorage.getItem('kahoot-storage'));
+      state.state.name = 'Cypress';
+      window.localStorage.setItem('kahoot-storage', JSON.stringify(state));
+    });
+
+    cy.visit(`/rooms/${roomId}`);
+    cy.get('[aria-label="force-answers-input"]').should('exist');
+    cy.get('[aria-label="force-answers-button"]').should('exist');
+    cy.intercept('POST', `${Cypress.env('VITE_REACT_APP_BASE_API_URL')}rooms/${roomId}/submissions`).as('post');
+    cy.get('[aria-label="force-answers-button"]').click();
+    cy.wait('@post')
+      .then((res) => {
+        expect(res.response.statusCode).to.eq(422);
+      });
+  });
+
+  it('admin forces next move', () => {
+    cy.visit(''); // root page of website
+    cy.window().then((window) => {
+      // Manually stub zustand state
+      const state = JSON.parse(window.localStorage.getItem('kahoot-storage'));
+      state.state.name = 'Cypress';
+      window.localStorage.setItem('kahoot-storage', JSON.stringify(state));
+    });
+
+    cy.visit(`/rooms/${roomId}`);
+    cy.get('[aria-label="force-answers-input"]').should('exist');
+    cy.get('[aria-label="force-answers-button"]').should('exist');
+    cy.intercept('POST', `${Cypress.env('VITE_REACT_APP_BASE_API_URL')}rooms/${roomId}/submissions`).as('post');
+    cy.get('[aria-label="force-answers-input"]').type('testkey');
+    cy.get('[aria-label="force-answers-button"]').click();
+    cy.wait('@post')
+      .then((res) => {
+        expect(res.response.statusCode).to.eq(200);
+      });
+  });
+});
+
+describe('Players check their final scores (game over, question -1)', () => {
+  it('Alice checks their score', () => {
+    cy.visit(''); // root page of website
+    cy.window().then((window) => {
+      // Manually stub zustand state
+      const state = JSON.parse(window.localStorage.getItem('kahoot-storage'));
+      state.state.name = 'Alice';
+      window.localStorage.setItem('kahoot-storage', JSON.stringify(state));
+    });
+
+    cy.visit(`/rooms/${roomId}`);
+    cy.get('[aria-label="room-title"]').should('have.text', 'Game has ended');
+    cy.get('[aria-label="your-rank"]').should('have.text', 'Your rank: 1');
+  });
+
+  it('admin checks their score', () => {
+    cy.visit(''); // root page of website
+    cy.window().then((window) => {
+      // Manually stub zustand state
+      const state = JSON.parse(window.localStorage.getItem('kahoot-storage'));
+      state.state.name = 'Cypress';
+      window.localStorage.setItem('kahoot-storage', JSON.stringify(state));
+    });
+
+    cy.visit(`/rooms/${roomId}`);
+    cy.get('[aria-label="room-title"]').should('have.text', 'Game has ended');
+    cy.get('[aria-label="your-rank"]').should('have.text', 'Your rank: 2');
+  });
+});
+
+describe('Player attempt to join room after game has ended', () => {
+  it('Player attempt to join room after game has ended and is denied entry', () => {
+    cy.visit(`/join?room=${roomId}`);
+    cy.get('[aria-label="join-game-code-input-disabled"]').should('exist');
+    cy.get('[aria-label="join-game-code-input"]').should('not.exist');
+    cy.intercept('POST', `${Cypress.env('VITE_REACT_APP_BASE_API_URL')}rooms/*`).as('post');
+    cy.get('[aria-label="join-game-name-input"]').type('George');
+    cy.get('[aria-label="submit-button"]').click();
+    cy.wait('@post')
+      .then((res) => {
+        expect(res.response.statusCode).to.eq(422);
       });
   });
 });
