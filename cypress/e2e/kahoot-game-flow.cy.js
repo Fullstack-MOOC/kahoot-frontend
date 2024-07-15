@@ -63,7 +63,7 @@ describe('Players join', () => {
     cy.get('[aria-label="room-open-room-button"]').should('not.exist');
     cy.get('[aria-label="room-start-game-button"]').should('not.exist');
     cy.get('[aria-label="room-id"]').should('have.text', roomId);
-    cy.get('[aria-label="player-entry-Alice').should('have.text', 'Alice');
+    cy.get('[aria-label="player-entry-Alice"]').should('have.text', 'Alice');
   });
 
   it('admin joins game, starts game, submits answer to first question (incorrect)', () => {

@@ -43,7 +43,7 @@ export default function Question() {
   const { mutate: mutateForceSubmitAnswer } = forceSubmitAnswer();
 
   const name = useBoundStore((state) => state.name);
-  const lastSubmission = useBoundStore((state) => state.lastSubmission);
+  const lastSubmission = (room?.submissionHistory && room?.submissionHistory?.length > 0) ? room.submissionHistory[room.submissionHistory.length - 1] : null;
 
   const queryClient = useQueryClient();
 
@@ -66,12 +66,6 @@ export default function Question() {
           <Center>
             <Text>Your rank: {room.yourRank}</Text>
           </Center>
-          {
-            // TODO: This below might not be necessary
-          }
-          {
-            JSON.stringify(lastSubmission)
-          }
           <Center>
             <Button
               bgColor="black"
