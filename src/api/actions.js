@@ -12,7 +12,6 @@ export const createRoom = () => {
 
   const navigate = useNavigate();
   const setUserName = useBoundStore((state) => state.setUserName);
-  const setLastSubmission = useBoundStore((state) => state.setLastSubmission);
 
   return useMutation({
     mutationFn: async (req) => {
@@ -30,7 +29,6 @@ export const createRoom = () => {
     onSuccess: async (payload) => {
       await queryClient.invalidateQueries({ queryKey: [GET_ROOM_KEY, payload.id] });
       navigate(`/rooms/${payload.id}`);
-      setLastSubmission(null);
     },
     onError: (error) => {
       toast.error(`Something went wrong: ${error.message}`);
@@ -117,8 +115,6 @@ export const changeRoomStatus = () => {
 export const submitAnswer = () => {
   const queryClient = useQueryClient();
 
-  const setLastSubmission = useBoundStore((state) => state.setLastSubmission);
-
   return useMutation({
     mutationFn: async (req) => {
       const { roomId, player, response } = req;
@@ -135,7 +131,6 @@ export const submitAnswer = () => {
     },
     onSuccess: async (payload) => {
       await queryClient.invalidateQueries({ queryKey: [GET_ROOM_KEY, payload.roomId] });
-      setLastSubmission(payload);
     },
     onError: (error) => {
       toast.error(`Something went wrong: ${error.message}`);
@@ -145,8 +140,6 @@ export const submitAnswer = () => {
 
 export const forceSubmitAnswer = () => {
   const queryClient = useQueryClient();
-
-  const setLastSubmission = useBoundStore((state) => state.setLastSubmission);
 
   return useMutation({
     mutationFn: async (req) => {
@@ -164,7 +157,6 @@ export const forceSubmitAnswer = () => {
     },
     onSuccess: async (payload) => {
       await queryClient.invalidateQueries({ queryKey: [GET_ROOM_KEY, payload.roomId] });
-      setLastSubmission(payload);
     },
     onError: (error) => {
       toast.error(`Something went wrong: ${error.message}`);
