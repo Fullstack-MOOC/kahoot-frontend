@@ -58,10 +58,10 @@ export default function Room() {
     return (
       <Flex direction="column" align="center">
         <Box>
-          <Heading justify="center" aria-label="room-title">Game has ended</Heading>
+          <Heading justify="center">Game has ended</Heading>
         </Box>
         <Box>
-          <Text aria-label="your-rank">Your rank: {room.yourRank}</Text>
+          <Text>Your rank: {room.yourRank}</Text>
           <Text marginTop={5}>Top3:</Text>
           <List>
             {room.top3 && room.top3.map((player, index) => {
@@ -148,7 +148,6 @@ export default function Room() {
                       mutateChangeRoomStatus({ code: roomId, roomKey, status: 'IN_PROGRESS' });
                     }}
                     marginTop={5}
-                    aria-label="room-start-game-button"
                   >
                     Start Game!
                   </Button>
