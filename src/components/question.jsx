@@ -61,7 +61,7 @@ export default function Question() {
       <Box>
         <Box bg={colors.accent3}>
           <Center>
-            <Heading aria-label="question-result">{ lastSubmission.correct ? 'Correct' : 'Incorrect' }</Heading>
+            <Heading>{ lastSubmission.correct ? 'Correct' : 'Incorrect' }</Heading>
           </Center>
           <Center>
             <Text>Your rank: {room.yourRank}</Text>
@@ -85,7 +85,7 @@ export default function Question() {
     return (
       <Box>
         <Box bg={colors.accent3}>
-          <Heading aria-label="question-heading">Question #{room.currentQuestionNumber + 1}: {room.currentQuestion}</Heading>
+          <Heading>Question #{room.currentQuestionNumber + 1}: {room.currentQuestion}</Heading>
           <form onSubmit={handleSubmit(onSubmit)}>
             <FormControl isInvalid={errors.answer}>
               <FormLabel htmlFor="code">Answer</FormLabel>
@@ -95,14 +95,13 @@ export default function Question() {
                 {...register('answer', {
                   required: 'This is required',
                 })}
-                aria-label="question-answer-input"
               />
               <FormErrorMessage>
                 {errors.answer && errors.answer.message}
               </FormErrorMessage>
             </FormControl>
             <Center>
-              <Button mt={4} colorScheme="teal" isLoading={isSubmitting} type="submit" aria-label="submit-button">
+              <Button mt={4} colorScheme="teal" isLoading={isSubmitting} type="submit">
                 Answer
               </Button>
             </Center>
@@ -117,7 +116,6 @@ export default function Question() {
                 onChange={(e) => setRoomKey(e.target.value)}
                 w="50%"
                 marginTop={5}
-                aria-label="force-answers-input"
               />
               {
                 room.status === RoomStates.IN_PROGRESS && (
@@ -128,7 +126,6 @@ export default function Question() {
                       mutateForceSubmitAnswer({ roomId, roomKey });
                     }}
                     marginTop={5}
-                    aria-label="force-answers-button"
                   >
                     Force Answers!
                   </Button>
