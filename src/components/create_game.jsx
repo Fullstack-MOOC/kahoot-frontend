@@ -65,7 +65,6 @@ export default function CreateGame() {
               required: 'This is required',
               minLength: { value: 4, message: 'Minimum length should be 4' },
             })}
-            aria-label="input-message-name"
           />
           <FormErrorMessage
             aria-label="error-message-name"
@@ -81,7 +80,6 @@ export default function CreateGame() {
               required: 'This is required',
               minLength: { value: 4, message: 'Minimum length should be 4' },
             })}
-            aria-label="input-room-key"
           />
           <FormErrorMessage
             aria-label="error-message-room-key"
@@ -119,7 +117,6 @@ export default function CreateGame() {
             colorScheme="teal"
             isLoading={isSubmitting}
             type="submit"
-            aria-label="submit-button"
           >
             Submit
           </Button>
