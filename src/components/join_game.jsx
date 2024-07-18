@@ -61,7 +61,6 @@ export default function JoinGame() {
           placeholder="game code"
           isDisabled
           value={roomId}
-          aria-label="join-game-code-input-disabled"
         />
       );
     }
@@ -75,7 +74,6 @@ export default function JoinGame() {
           required: 'This is required',
           minLength: { value: 6, message: 'Minimum length should be 6' },
         })}
-        aria-label="join-game-code-input"
       />
     );
   };
@@ -98,7 +96,6 @@ export default function JoinGame() {
           <Input id="name"
             placeholder="be respectful, please."
             {...register('name', { required: 'This is required' })}
-            aria-label="join-game-name-input"
           />
           <FormErrorMessage>
             {errors.name && errors.name.message}
@@ -110,7 +107,6 @@ export default function JoinGame() {
             colorScheme="teal"
             isLoading={isSubmitting}
             type="submit"
-            aria-label="submit-button"
           >
             Join
           </Button>
