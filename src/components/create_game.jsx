@@ -66,9 +66,7 @@ export default function CreateGame() {
               minLength: { value: 4, message: 'Minimum length should be 4' },
             })}
           />
-          <FormErrorMessage
-            aria-label="error-message-name"
-          >
+          <FormErrorMessage>
             {errors.creator && errors.creator.message}
           </FormErrorMessage>
         </FormControl>
@@ -81,9 +79,7 @@ export default function CreateGame() {
               minLength: { value: 4, message: 'Minimum length should be 4' },
             })}
           />
-          <FormErrorMessage
-            aria-label="error-message-room-key"
-          >
+          <FormErrorMessage>
             {errors.roomKey && errors.roomKey.message}
           </FormErrorMessage>
         </FormControl>
@@ -103,11 +99,8 @@ export default function CreateGame() {
             {...register('questions', {
               required: 'Questions are required',
             })}
-            aria-label="input-question-responses"
           />
-          <FormErrorMessage
-            aria-label="error-message-question-responses"
-          >
+          <FormErrorMessage>
             {errors.questions && errors.questions.message}
           </FormErrorMessage>
         </FormControl>
