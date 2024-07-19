@@ -1,0 +1,41 @@
+{
+  "cypress": {
+    "failing": {
+      "spec.js": {
+        "Creating and opening a game with questions and answers": {
+          "shows validation errors when leaving fields blank": "passed",
+          "admin creates room, then opens it": "passed"
+        },
+        "Players join": {
+          "Alice joins the game": "passed",
+          "admin joins game, starts game, submits answer to first question (incorrect)": "passed"
+        },
+        "Late players attempt to join": {
+          "Late player attempts to join and is denied entry": "passed"
+        },
+        "Remaining players submit answers to first question (index 0)": {
+          "Alice submits (correct)": "passed"
+        },
+        "Players submit answers to 2nd question (index 1)": {
+          "admin submits (correct)": "passed",
+          "Alice submits (correct)": "passed"
+        },
+        "Players submit answers to 3rd question (index 2)": {
+          "admin submits (incorrect)": "passed",
+          "Alice submits (correct)": "passed"
+        },
+        "admin forces move on 4th question since Alice is AFK": {
+          "admin fails to force next move (missing key)": "passed",
+          "admin forces next move": "passed"
+        },
+        "Players check their final scores (game over, question -1)": {
+          "Alice checks their score": "passed",
+          "admin checks their score": "passed"
+        },
+        "Player attempt to join room after game has ended": {
+          "Player attempt to join room after game has ended and is denied entry": "passed"
+        }
+      }
+    }
+  }
+}
