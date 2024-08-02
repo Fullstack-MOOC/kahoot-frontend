@@ -4,7 +4,7 @@
   "description": "Cypress Frontend Testing Starterpack",
   "main": "src/index.js",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --port 8000",
     "serve": "NODE_ENV=development vite preview",
     "test": "eslint src",
     "build": "npm run clean; NODE_ENV=production vite build",
